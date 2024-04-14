@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Interface\IService\" />
+    <Folder Include="Application\Mapping\" />
+    <Folder Include="Application\Dto%27s\" />
+    <Folder Include="Application\Exceptions\" />
+    <Folder Include="Application\Wrapers\" />
+    <Folder Include="Application\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domaine\Para-Domaine.csproj" />
+  </ItemGroup>
+
+</Project>

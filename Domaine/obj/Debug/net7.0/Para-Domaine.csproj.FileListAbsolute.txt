@@ -1,0 +1,15 @@
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\bin\Debug\net7.0\Para-Domaine.deps.json
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\bin\Debug\net7.0\Para-Domaine.runtimeconfig.json
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\bin\Debug\net7.0\Para-Domaine.dll
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\bin\Debug\net7.0\Para-Domaine.pdb
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.csproj.AssemblyReference.cache
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.AssemblyInfoInputs.cache
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.AssemblyInfo.cs
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.csproj.CoreCompileInputs.cache
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.sourcelink.json
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.dll
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\refint\Para-Domaine.dll
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.pdb
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Para-Domaine.genruntimeconfig.cache
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\ref\Para-Domaine.dll

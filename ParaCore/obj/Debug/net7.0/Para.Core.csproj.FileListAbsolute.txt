@@ -1,0 +1,12 @@
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\bin\Debug\net7.0\Para.Core.deps.json
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\bin\Debug\net7.0\Para.Core.dll
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\bin\Debug\net7.0\Para.Core.pdb
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\Para.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\Para.Core.AssemblyInfoInputs.cache
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\Para.Core.AssemblyInfo.cs
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\Para.Core.csproj.CoreCompileInputs.cache
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\Para.Core.sourcelink.json
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\Para.Core.dll
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\refint\Para.Core.dll
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\Para.Core.pdb
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\ParaCore\obj\Debug\net7.0\ref\Para.Core.dll
