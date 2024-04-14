@@ -2,7 +2,7 @@
 
 using Domaine.Entities;
 using Infra.Database;
-using Para.Core.Application.Interface.IRepositories;
+using Core.Application.Interface.IRepositories;
 
 namespace Para.Infrastructure.Repository;
 public class UserRepository : IUserRepository
