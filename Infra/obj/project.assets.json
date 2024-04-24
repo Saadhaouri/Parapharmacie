@@ -1214,6 +1214,19 @@
           }
         }
       },
+      "Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "Domaine": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Core.dll": {}
+        }
+      },
       "Domaine/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
@@ -3453,6 +3466,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Core/1.0.0": {
+      "type": "project",
+      "path": "../Core/Core.csproj",
+      "msbuildProject": "../Core/Core.csproj"
+    },
     "Domaine/1.0.0": {
       "type": "project",
       "path": "../Domaine/Domaine.csproj",
@@ -3461,6 +3479,7 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "Core >= 1.0.0",
       "Domaine >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.18"
     ]
@@ -3492,6 +3511,9 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
+            "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj": {
+              "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj"
+            },
             "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj": {
               "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj"
             }

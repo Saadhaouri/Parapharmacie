@@ -12,3 +12,4 @@ C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\ref\Domaine
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\bin\Debug\net7.0\Domaine.runtimeconfig.json
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Domaine.csproj.AssemblyReference.cache
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Domaine.genruntimeconfig.cache
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\Domaine\obj\Debug\net7.0\Domaine.sourcelink.json
