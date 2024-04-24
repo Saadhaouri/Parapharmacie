@@ -1,0 +1,22 @@
+# .NET
+*.obj
+*.bin
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
+*.cache
+*.log
+bin/
+obj/
+# Visual Studio Code
+.vscode/
+# Rider
+.idea/
+*.sln.iml
+*.ide/
+# macOS
+.DS_Store
+# Windows
+Thumbs.db

@@ -15,7 +15,6 @@ C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyPar
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.AssemblyInfoInputs.cache
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.AssemblyInfo.cs
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.csproj.CoreCompileInputs.cache
-C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\staticwebassets.build.json
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\staticwebassets.development.json
@@ -86,3 +85,7 @@ C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Domaine
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Infra.dll
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Infra.pdb
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Domaine.pdb
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.sourcelink.json
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Core.dll
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Core.pdb
+C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.MvcApplicationPartsAssemblyInfo.cs
