@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "qZZGjrhy/J6e/WwKSXVQJn4DmMnPwqgluRIhlYcS2Ga3sTk8kNxBX9arnVyARyRQ0dai887UhHJrGtanrHakpQ==",
+=======
+  "dgSpecHash": "j0OPS0pVrZkvMoTkQnj1uRon0w+ttc5QkziM6lvzWADKv/CTBqDyHPnIosD1WSpF9ZtqKA1KRoZ2cJe2mTml8w==",
+>>>>>>> origin/main
   "success": true,
   "projectFilePath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Infra\\Infra.csproj",
   "expectedPackageFiles": [

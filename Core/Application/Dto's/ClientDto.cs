@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿namespace Core.Application.Dto_s;
 public class ClientDto
 {
@@ -9,3 +10,17 @@ public class ClientDto
 
 }
 
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core.Application.Dto_s
+{
+    internal class ClientDto
+    {
+    }
+}
+>>>>>>> origin/main

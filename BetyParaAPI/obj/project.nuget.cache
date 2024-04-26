@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "MvgMGvbbYTOFRUMj2zAitxm95/c+82FpN2mvzPbDisRK2JzAxNoeZD81mjJ3vA6lL9o4CCzZSgBbDTqzO7iUMA==",
+=======
+  "dgSpecHash": "IZCpmQ2dtQgclO8Z08vzuMPG2OP9vhiVGm8tETV0ABxX41+oTmjRBSkQOjyannwEMXZVEYCBnEiJAHcCkeUwWA==",
+>>>>>>> origin/main
   "success": true,
   "projectFilePath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\BetyParaAPI\\BetyParaAPI.csproj",
   "expectedPackageFiles": [

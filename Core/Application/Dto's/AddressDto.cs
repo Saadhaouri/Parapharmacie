@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Domaine.Entities;
 
 namespace Core.Application.Dto_s;
@@ -13,4 +14,13 @@ namespace Core.Application.Dto_s;
 
 
 }
+=======
+﻿namespace Core.Application.Dto_s;
+    public class AddressDto
+    {
+            
+
+
+    }
+>>>>>>> origin/main
 

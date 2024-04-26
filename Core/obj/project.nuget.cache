@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "eH3YiGBAiIbnAexm9l1kHz525SYAzBkir8FU9JOnfiA+2Cq5pZdqsoO7sN8dAx2ivlmpWEV5z4av5BTTQTCZSg==",
+=======
+  "dgSpecHash": "cPlt6uybfHsQoURG8MS+RvGYMqXiD3ZRH9SesHoqSOoinqT8ehtPqfkrFwkg9KlQ0B++dZQzCexnW/28sm/4Kw==",
+>>>>>>> origin/main
   "success": true,
   "projectFilePath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj",
   "expectedPackageFiles": [

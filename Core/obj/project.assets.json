@@ -1152,7 +1152,10 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
+<<<<<<< HEAD
           "AutoMapper": "13.0.1",
+=======
+>>>>>>> origin/main
           "EntityFramework": "6.4.4",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.18"
         },
@@ -3259,7 +3262,10 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+<<<<<<< HEAD
       "AutoMapper >= 13.0.1",
+=======
+>>>>>>> origin/main
       "Domaine >= 1.0.0"
     ]
   },
@@ -3305,12 +3311,15 @@
     "frameworks": {
       "net7.0": {
         "targetAlias": "net7.0",
+<<<<<<< HEAD
         "dependencies": {
           "AutoMapper": {
             "target": "Package",
             "version": "[13.0.1, )"
           }
         },
+=======
+>>>>>>> origin/main
         "imports": [
           "net461",
           "net462",

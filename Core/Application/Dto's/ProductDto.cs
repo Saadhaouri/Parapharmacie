@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Domaine.Entities;
 
 namespace Core.Application.Dto_s
@@ -19,5 +20,17 @@ namespace Core.Application.Dto_s
 
         public ICollection<Order> Ordres { get; set; }
 
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core.Application.Dto_s
+{
+    internal class ProductDto
+    {
+>>>>>>> origin/main
     }
 }

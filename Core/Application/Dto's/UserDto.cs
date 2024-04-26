@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Domaine.Entities;
 
 namespace Core.Application.Dto_s;
@@ -13,3 +14,17 @@ namespace Core.Application.Dto_s;
 
 }
 
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core.Application.Dto_s
+{
+    internal class UserDto
+    {
+    }
+}
+>>>>>>> origin/main

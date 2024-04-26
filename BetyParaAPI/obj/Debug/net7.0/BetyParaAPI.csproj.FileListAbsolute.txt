@@ -88,5 +88,8 @@ C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Domaine
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.sourcelink.json
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Core.dll
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\Core.pdb
+<<<<<<< HEAD
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\bin\Debug\net7.0\AutoMapper.dll
+=======
+>>>>>>> origin/main
 C:\Users\helal\OneDrive\Bureau\ParaPharmacy\BetyParaAPI\obj\Debug\net7.0\BetyParaAPI.MvcApplicationPartsAssemblyInfo.cs

@@ -1234,7 +1234,10 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
+<<<<<<< HEAD
           "AutoMapper": "13.0.1",
+=======
+>>>>>>> origin/main
           "Domaine": "1.0.0"
         },
         "compile": {
@@ -3512,7 +3515,10 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+<<<<<<< HEAD
       "AutoMapper >= 13.0.1",
+=======
+>>>>>>> origin/main
       "Core >= 1.0.0",
       "Domaine >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.18"
