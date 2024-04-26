@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Dto%27s\" />
     <Folder Include="Application\Exceptions\" />
-    <Folder Include="Application\Interface\IService\" />
-    <Folder Include="Application\Mapping\" />
-    <Folder Include="Application\Services\" />
     <Folder Include="Application\Wrapers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>

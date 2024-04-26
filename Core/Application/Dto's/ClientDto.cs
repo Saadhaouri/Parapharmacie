@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Core.Application.Dto_s
+﻿namespace Core.Application.Dto_s;
+public class ClientDto
 {
-    internal class ClientDto
-    {
-    }
+    public Guid ClientID { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+    public virtual ICollection<OrderDto> Orders { get; set; }
+
 }
+

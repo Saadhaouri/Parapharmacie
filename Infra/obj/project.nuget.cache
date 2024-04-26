@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "j0OPS0pVrZkvMoTkQnj1uRon0w+ttc5QkziM6lvzWADKv/CTBqDyHPnIosD1WSpF9ZtqKA1KRoZ2cJe2mTml8w==",
+  "dgSpecHash": "qZZGjrhy/J6e/WwKSXVQJn4DmMnPwqgluRIhlYcS2Ga3sTk8kNxBX9arnVyARyRQ0dai887UhHJrGtanrHakpQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Infra\\Infra.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\helal\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\helal\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\helal\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\helal\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
