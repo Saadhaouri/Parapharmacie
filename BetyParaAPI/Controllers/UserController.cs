@@ -26,7 +26,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{userId}")]
-    public IActionResult GetUserById(Guid userId)
+    public IActionResult GetUserById(string userId)
     {
         var userDto = _userService.GetUserById(userId);
         if (userDto == null)
@@ -50,7 +50,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{userId}")]
-    public IActionResult UpdateUser(Guid userId, [FromBody] UserViewModel userViewModel)
+    public IActionResult UpdateUser(string userId, [FromBody] UserViewModel userViewModel)
     {
         if (!ModelState.IsValid)
         {
@@ -67,7 +67,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{userId}")]
-    public IActionResult DeleteUser(Guid userId)
+    public IActionResult DeleteUser(string userId)
     {
         var existingUserDto = _userService.GetUserById(userId);
         if (existingUserDto == null)

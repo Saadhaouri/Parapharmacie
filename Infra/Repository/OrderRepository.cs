@@ -1,63 +1,101 @@
 ﻿using Core.Application.Interface.IRepositories;
 using Domaine.Entities;
-using Infra.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Infra.DATA;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Repository
+namespace Infra.Repository;
+
+public class OrderRepository : IOrderRepository
 {
-    public class OrderRepository : IOrderRepository
+    private readonly PrDbContext _context;
+
+    public OrderRepository(PrDbContext context)
     {
-        private readonly ParaDbContext _dbContext;  // Replace 'YourDbContext' with the name of your actual DbContext
+        _context = context;
+    }
 
-        public OrderRepository(ParaDbContext dbContext)
+    public Order AddOrder(Order order, List<Guid> productIds)
+    {
+        _context.Orders.Add(order);
+
+        foreach (var productId in productIds)
         {
-            _dbContext = dbContext;
+            _context.OrderProducts.Add(new OrderProduct { Order = order, ProductId = productId });
         }
 
-        public IEnumerable<Order> GetOrders()
-        {
-            return _dbContext.Orders.ToList();
-        }
+        _context.SaveChanges();
+        return order;
+    }
 
-        public Order GetOrderById(Guid orderId)
-        {
-            return _dbContext.Orders.FirstOrDefault(o => o.OrderID == orderId)
-                   ?? throw new InvalidOperationException("Order not found");
-        }
+    public Order GetOrderById(Guid orderId)
+    {
+        return _context.Orders
+            .Include(o => o.OrderProducts)
+            .FirstOrDefault(o => o.OrderID == orderId);
+    }
 
-        public void InsertOrder(Order order)
-        {
-            _dbContext.Orders.Add(order);
-        }
+    public IEnumerable<Order> GetAllOrders()
+    {
+        return _context.Orders
+            .Include(o => o.OrderProducts)
+            .ToList();
+    }
 
-        public void UpdateOrder(Order order)
-        {
-            _dbContext.Orders.Update(order);
-        }
+    public void UpdateOrder(Order order, List<Guid> productIds)
+    {
+        var existingOrder = _context.Orders
+           .Include(o => o.OrderProducts)
+           .FirstOrDefault(o => o.OrderID == order.OrderID);
 
-     
-
-        public void Save()
+        if (existingOrder != null)
         {
-            _dbContext.SaveChanges();
-        }
+            // Update order details
+            existingOrder.SupplierId = order.SupplierId;
+            existingOrder.OrderDate = order.OrderDate;
+            existingOrder.TotalAmount = order.TotalAmount;
+            existingOrder.Status = order.Status;
+            existingOrder.ClientId = order.ClientId;
 
-        public void DeleteOrder(Guid orderId)
-        {
-            var order = _dbContext.Orders.FirstOrDefault(o => o.OrderID == orderId);
-            if (order != null)
+            // Detach existing order products to avoid tracking issues
+            foreach (var op in existingOrder.OrderProducts.ToList())
             {
-                _dbContext.Orders.Remove(order);
+                var trackedEntity = _context.OrderProducts.Local
+                    .FirstOrDefault(ep => ep.OrderId == op.OrderId && ep.ProductId == op.ProductId);
+                if (trackedEntity != null)
+                {
+                    _context.Entry(trackedEntity).State = EntityState.Detached;
+                }
             }
-            else
+
+            // Clear existing order products
+            _context.OrderProducts.RemoveRange(existingOrder.OrderProducts);
+
+            // Add new order products
+            foreach (var productId in productIds)
             {
-                throw new InvalidOperationException("Order to delete not found");
+                var newOrderProduct = new OrderProduct { OrderId = existingOrder.OrderID, ProductId = productId };
+
+                var trackedEntity = _context.OrderProducts.Local
+                    .FirstOrDefault(op => op.OrderId == newOrderProduct.OrderId && op.ProductId == newOrderProduct.ProductId);
+                if (trackedEntity != null)
+                {
+                    _context.Entry(trackedEntity).State = EntityState.Detached;
+                }
+
+                _context.OrderProducts.Add(newOrderProduct);
             }
+
+            _context.SaveChanges();
         }
     }
 
+    public void DeleteOrder(Guid orderId)
+    {
+        var order = _context.Orders.Find(orderId);
+        if (order != null)
+        {
+            _context.Orders.Remove(order);
+            _context.SaveChanges();
+        }
+    }
 }

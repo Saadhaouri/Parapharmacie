@@ -1,49 +1,58 @@
-﻿using Domaine.Entities;
-using Infra.Database;
-using Core.Application.Interface.IRepositories;
+﻿using Core.Application.Interface.IRepositories;
+using Domaine.Entities;
+using Infra.DATA;
+using Microsoft.EntityFrameworkCore;
 
-
-namespace Para.Infrastructure.Repository;
 public class CategoryRepository : ICategoryRepository
 {
-    private readonly ParaDbContext _dbContext; 
+    private readonly PrDbContext _context;
 
-    public CategoryRepository(ParaDbContext dbContext)
+    public CategoryRepository(PrDbContext context)
     {
-        _dbContext = dbContext;
+        _context = context;
     }
 
-    public IEnumerable<Category> GetCategories()
+    public async Task<IEnumerable<Category>> GetAllAsync()
     {
-        return _dbContext.Categories.ToList();
+        return await _context.Categories.ToListAsync();
     }
 
-    public Category GetCategoryById(Guid categoryId)
+    public async Task<Category> GetByIdAsync(Guid categoryId)
     {
-        return _dbContext.Categories.FirstOrDefault(c => c.ID == categoryId) ?? throw new InvalidOperationException(" Category Not found ");
+        return await _context.Categories.FindAsync(categoryId) ?? throw new InvalidOperationException("category not found ");
     }
 
-    public void InsertCategory(Category category)
+    public async Task InsertAsync(Category category)
     {
-        _dbContext.Categories.Add(category);
+        await _context.Categories.AddAsync(category);
+        await _context.SaveChangesAsync();
     }
 
-    public void UpdateCategory(Category category)
+    public async Task DeleteAsync(Guid categoryId)
     {
-        _dbContext.Categories.Update(category);
-    }
-
-    public void DeleteCategory(Guid categoryId)
-    {
-        var category = _dbContext.Categories.FirstOrDefault(c => c.ID == categoryId);
+        var category = await _context.Categories.FindAsync(categoryId);
         if (category != null)
         {
-            _dbContext.Categories.Remove(category);
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
         }
     }
 
-    public void Save()
+    public async Task UpdateAsync(Category category)
     {
-        _dbContext.SaveChanges();
+        _context.Categories.Update(category);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(Guid categoryId)
+    {
+        return await _context.Products
+                             .Where(p => p.CategoryID == categoryId)
+                             .ToListAsync();
+    }
+
+    public async Task SaveAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }

@@ -40,7 +40,7 @@
         }
 
         [HttpPost]
-        public IActionResult AddClient([FromBody] ClientViewModel clientViewModel)
+        public IActionResult AddClient([FromBody] CreateClientViewModel clientViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -52,7 +52,7 @@
         }
 
         [HttpPut("{clientId}")]
-        public IActionResult UpdateClient(Guid clientId, [FromBody] ClientViewModel clientViewModel)
+        public IActionResult UpdateClient(Guid clientId, [FromBody] CreateClientViewModel clientViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -64,7 +64,7 @@
                 return NotFound("Client not found.");
             }
             _mapper.Map(clientViewModel, existingClientDto);
-            _clientService.UpdateClient(existingClientDto);
+            _clientService.UpdateClient( clientId,existingClientDto);
             return NoContent();
         }
 

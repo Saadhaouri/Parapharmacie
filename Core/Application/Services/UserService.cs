@@ -23,7 +23,7 @@ namespace Core.Application.Services
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public UserDto GetUserById(Guid userId)
+        public UserDto GetUserById(string userId)
         {
             var user = _userRepository.GetUserById(userId);
             return _mapper.Map<UserDto>(user);
@@ -43,7 +43,7 @@ namespace Core.Application.Services
             _userRepository.Save();
         }
 
-        public void DeleteUser(Guid userId)
+        public void DeleteUser(string userId)
         {
             _userRepository.DeleteUser(userId);
             _userRepository.Save();

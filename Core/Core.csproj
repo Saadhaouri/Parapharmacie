@@ -7,26 +7,37 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
+    <Compile Remove="Application\Mapping\**" />
+    <EmbeddedResource Remove="Application\Mapping\**" />
+    <None Remove="Application\Mapping\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+
     <Folder Include="Application\Exceptions\" />
-=======
-    <Folder Include="Application\Dto%27s\" />
     <Folder Include="Application\Exceptions\" />
-    <Folder Include="Application\Interface\IService\" />
-    <Folder Include="Application\Mapping\" />
-    <Folder Include="Application\Services\" />
->>>>>>> origin/main
+
     <Folder Include="Application\Wrapers\" />
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
+
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.18" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.18" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-=======
->>>>>>> origin/main
+
     <ProjectReference Include="..\Domaine\Domaine.csproj" />
   </ItemGroup>
 

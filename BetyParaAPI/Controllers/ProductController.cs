@@ -1,11 +1,14 @@
-﻿namespace BetyParaAPI.Controllers;
+﻿using AutoMapper;
+using BetyParaAPI.ViewModel;
+using Core.Application.Dto_s;
+using Core.Application.Interface.IService;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-    using AutoMapper;
-    using Core.Application.Dto_s;
-    using Core.Application.Interface.IService;
-    using Microsoft.AspNetCore.Mvc;
-    using ViewModel;
-
+namespace BetyParaAPI.Controllers
+{
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -22,9 +25,9 @@
         [HttpGet]
         public IActionResult GetProducts()
         {
-            var productDtos = _productService.GetProducts();
-            var productViewModels = _mapper.Map<IEnumerable<ProductViewModel>>(productDtos);
-            return Ok(productViewModels);
+            var productsDto = _productService.GetProducts();
+            var productsViewModel = _mapper.Map<IEnumerable<ProductViewModel>>(productsDto);
+            return Ok(productsViewModel);
         }
 
         [HttpGet("{productId}")]
@@ -40,45 +43,93 @@
         }
 
         [HttpPost]
-        public IActionResult AddProduct([FromBody] ProductViewModel productViewModel)
+        public IActionResult AddProduct([FromBody] AddProductViewModel productViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var productDto = _mapper.Map<ProductDto>(productViewModel);
             _productService.AddProduct(productDto);
-        return Ok("Product added successfully");
-    }
+            return Ok("Product added successfully");
+        }
 
-        [HttpPut("{productId}")]
-        public IActionResult UpdateProduct(Guid productId, [FromBody] ProductViewModel productViewModel)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] AddProductViewModel productViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var existingProductDto = _productService.GetProductById(productId);
-            if (existingProductDto == null)
+
+            try
             {
-                return NotFound();
+                var productDto = _mapper.Map<ProductDto>(productViewModel);
+                await _productService.UpdateProduct(id, productDto);
             }
-            _mapper.Map(productViewModel, existingProductDto);
-            _productService.UpdateProduct(existingProductDto);
-            return NoContent();
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+            return Ok("Product updated successfully");
         }
 
-        [HttpDelete("{productId}")]
-        public IActionResult DeleteProduct(Guid productId)
+        [HttpDelete("{id}")]
+        public IActionResult DeleteProduct(Guid id)
         {
-            var existingProductDto = _productService.GetProductById(productId);
-            if (existingProductDto == null)
+            try
             {
-                return NotFound();
+                _productService.DeleteProduct(id);
             }
-            _productService.DeleteProduct(productId);
-            return NoContent();
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+            return Ok("Product deleted successfully");
+        }
+
+       
+
+      
+        [HttpGet("{productId}/stock")]
+        public IActionResult CheckStock(Guid productId)
+        {
+            var stock = _productService.CheckStock(productId);
+            return Ok(stock);
+        }
+
+        [HttpGet("{productId}/availability")]
+        public IActionResult CheckAvailability(Guid productId, [FromQuery] int desiredQuantity)
+        {
+            var isAvailable = _productService.CheckAvailability(productId, desiredQuantity);
+            return Ok(isAvailable);
+        }
+
+       
+
+
+        [HttpGet("stock-alerts")]
+        public IActionResult GetStockAlerts()
+        {
+            var productsDto = _productService.GetStockAlerts();
+            var productsViewModel = _mapper.Map<IEnumerable<ProductViewModel>>(productsDto);
+            return Ok(productsViewModel);
+        }
+
+        [HttpGet("expiring-soon")]
+        public IActionResult GetProductsExpiringWithinAMonth()
+        {
+            var productsDto = _productService.GetProductsExpiringWithinAMonth();
+            var productsViewModel = _mapper.Map<IEnumerable<ProductViewModel>>(productsDto);
+            return Ok(productsViewModel);
         }
     }
 
-
+    public class QuantityDto
+    {
+        public int Quantity { get; set; }
+    }
+}

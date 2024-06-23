@@ -7,7 +7,7 @@ namespace Core.Application.Interface.IService
         IEnumerable<ClientDto> GetClients();
         ClientDto GetClientById(Guid clientId);
         void AddClient(ClientDto client);
-        void UpdateClient(ClientDto client);
+        void UpdateClient( Guid  clientId , ClientDto client);
         void DeleteClient(Guid clientId);
     }
 

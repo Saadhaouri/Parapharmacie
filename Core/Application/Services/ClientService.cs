@@ -39,16 +39,24 @@ public class ClientService : IClientService
         _clientRepository.Save();
     }
 
-    public void UpdateClient(ClientDto clientDto)
+    public void UpdateClient(Guid clientId, ClientDto clientDto)
     {
-        var existingClient = _clientRepository.GetClientById(clientDto.ClientID);
+        var existingClient = _clientRepository.GetClientById(clientId);
         if (existingClient == null)
         {
             throw new ApplicationException("Client not found.");
         }
 
-        // Mapping the updated values
-        _mapper.Map(clientDto, existingClient);
+        existingClient.Firstname = clientDto.Firstname;
+        existingClient.LastName = clientDto.LastName;
+        existingClient.PhoneNumber = clientDto.PhoneNumber;
+        existingClient.Email = clientDto.Email;
+        existingClient.Address.Nr = clientDto.Address.Nr;
+        existingClient.Address.street = clientDto.Address.street;
+        existingClient.Address.neighborhood = clientDto.Address.neighborhood;
+        existingClient.Address.city = clientDto.Address.city;
+
+
         _clientRepository.UpdateClient(existingClient);
         _clientRepository.Save();
     }

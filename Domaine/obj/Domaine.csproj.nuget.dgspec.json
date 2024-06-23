@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj": {}
+    "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj": {}
   },
   "projects": {
-    "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj": {
+    "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj",
+        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj",
         "projectName": "Domaine",
-        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj",
+        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj",
         "packagesPath": "C:\\Users\\helal\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\obj\\",
+        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\helal\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -47,6 +47,20 @@
             "EntityFramework": {
               "target": "Package",
               "version": "[6.4.4, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.18, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",

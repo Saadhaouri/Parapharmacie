@@ -1,14 +1,12 @@
 ﻿using Core.Application.Dto_s;
 
-namespace Core.Application.Interface.IService
-{
-    public interface IOrderService
-    {
-        IEnumerable<OrderDto> GetOrders();
-        OrderDto GetOrderById(Guid orderId);
-        void AddOrder(OrderDto order);
-        void UpdateOrder(OrderDto order);
-        void DeleteOrder(Guid orderId);
-    }
+namespace Core.Application.Interface.IServices;
 
+public interface IOrderService
+{
+    OrderDto CreateOrder(CreateOrderDto createOrderDto);
+    OrderDto GetOrderById(Guid orderId);
+    IEnumerable<OrderDto> GetAllOrders();
+    void UpdateOrder(Guid orderId, CreateOrderDto updateOrderDto);
+    void DeleteOrder(Guid orderId);
 }

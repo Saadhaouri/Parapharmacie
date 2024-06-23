@@ -1,14 +1,14 @@
 ﻿using Domaine.Entities;
-using Infra.Database;
+using Infra.DATA;
 using Core.Application.Interface.IRepositories;
 
 namespace Para.Infrastructure.Repository
 {
     public class ClientRepository : IClientRepository
     {
-        private readonly ParaDbContext _dbContext;
+        private readonly PrDbContext _dbContext;
 
-        public ClientRepository(ParaDbContext dbContext)
+        public ClientRepository(PrDbContext dbContext)
         {
             _dbContext = dbContext;
         }

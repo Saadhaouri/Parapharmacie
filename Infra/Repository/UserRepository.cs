@@ -1,15 +1,15 @@
 ﻿
 
 using Domaine.Entities;
-using Infra.Database;
+using Infra.DATA;
 using Core.Application.Interface.IRepositories;
 
 namespace Para.Infrastructure.Repository;
 public class UserRepository : IUserRepository
 {
-    private readonly ParaDbContext _dbContext; 
+    private readonly PrDbContext _dbContext; 
 
-    public UserRepository(ParaDbContext dbContext)
+    public UserRepository(PrDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -19,7 +19,7 @@ public class UserRepository : IUserRepository
         return _dbContext.Users.ToList();
     }
 
-    public User GetUserById(Guid userId)
+    public User GetUserById(string userId)
     {
         return _dbContext.Users.FirstOrDefault(u => u.Id == userId)   ?? throw new InvalidOperationException("User Not found ");
     }
@@ -34,7 +34,7 @@ public class UserRepository : IUserRepository
         _dbContext.Users.Update(user);
     }
 
-    public void DeleteUser(Guid userId)
+    public void DeleteUser(string userId)
     {
         var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
         if (user != null)

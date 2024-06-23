@@ -5,9 +5,9 @@ namespace Core.Application.Interface.IService;
 public interface IUserService
 {
     IEnumerable<UserDto> GetUsers();
-    UserDto GetUserById(Guid userId);
+    UserDto GetUserById(string userId);
     void AddUser(UserDto user);
     void UpdateUser(UserDto user);
-    void DeleteUser(Guid userId);
+    void DeleteUser(string userId);
 }
 

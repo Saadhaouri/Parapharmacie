@@ -1,13 +1,13 @@
-﻿namespace BetyParaAPI.Controllers
-{
-    using AutoMapper;
-    using Core.Application.Dto_s;
-    using Core.Application.Interface.IService;
-    using Microsoft.AspNetCore.Mvc;
-    using ViewModel;
+﻿using AutoMapper;
+using BetyParaAPI.ViewModel;
+using Core.Application.Dto_s;
+using Core.Application.Interface.IServices;
+using Microsoft.AspNetCore.Mvc;
 
-    [Route("api/[controller]")]
+namespace BetyParaAPI.Controllers
+{
     [ApiController]
+    [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -19,66 +19,58 @@
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public IActionResult GetOrders()
+        [HttpPost]
+        public IActionResult CreateOrder([FromBody] CreateOrderViewModel createOrderViewModel)
         {
-            var orderDtos = _orderService.GetOrders();
-            var orderViewModels = _mapper.Map<IEnumerable<OrderViewModel>>(orderDtos);
-            return Ok(orderViewModels);
+            if (createOrderViewModel == null)
+                return BadRequest();
+
+            var createOrderDto = _mapper.Map<CreateOrderDto>(createOrderViewModel);
+            var createdOrder = _orderService.CreateOrder(createOrderDto);
+
+            var orderViewModel = _mapper.Map<OrderViewModel>(createdOrder);
+
+            return Ok(orderViewModel);
         }
 
         [HttpGet("{orderId}")]
         public IActionResult GetOrderById(Guid orderId)
         {
-            var orderDto = _orderService.GetOrderById(orderId);
-            if (orderDto == null)
-            {
-                return NotFound("Order not found.");
-            }
-            var orderViewModel = _mapper.Map<OrderViewModel>(orderDto);
+            var order = _orderService.GetOrderById(orderId);
+
+            if (order == null)
+                return NotFound();
+
+            var orderViewModel = _mapper.Map<OrderViewModel>(order);
+
             return Ok(orderViewModel);
         }
 
-        [HttpPost]
-        public IActionResult AddOrder([FromBody] OrderViewModel orderViewModel)
+        [HttpGet]
+        public IActionResult GetAllOrders()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var orderDto = _mapper.Map<OrderDto>(orderViewModel);
-            _orderService.AddOrder(orderDto);
-             return Ok("Order added successfully");
+            var orders = _orderService.GetAllOrders();
+            var orderViewModels = _mapper.Map<List<OrderViewModel>>(orders);
+            return Ok(orderViewModels);
         }
 
         [HttpPut("{orderId}")]
-        public IActionResult UpdateOrder(Guid orderId, [FromBody] OrderViewModel orderViewModel)
+        public IActionResult UpdateOrder(Guid orderId, [FromBody] CreateOrderViewModel orderViewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var existingOrderDto = _orderService.GetOrderById(orderId);
-            if (existingOrderDto == null)
-            {
-                return NotFound("Order not found.");
-            }
-            _mapper.Map(orderViewModel, existingOrderDto);
-            _orderService.UpdateOrder(existingOrderDto);
-            return NoContent();
+            if (orderViewModel == null)
+                return BadRequest();
+
+            var orderDto = _mapper.Map<CreateOrderDto>(orderViewModel);
+            _orderService.UpdateOrder(orderId, orderDto);
+
+            return Ok("Order updated successfully");
         }
 
         [HttpDelete("{orderId}")]
         public IActionResult DeleteOrder(Guid orderId)
         {
-            var existingOrderDto = _orderService.GetOrderById(orderId);
-            if (existingOrderDto == null)
-            {
-                return NotFound("Order not found.");
-            }
             _orderService.DeleteOrder(orderId);
             return NoContent();
         }
     }
-
 }

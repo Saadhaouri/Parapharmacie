@@ -1,11 +1,11 @@
-﻿namespace BetyParaAPI.Controllers
-{
-    using AutoMapper;
-    using Core.Application.Dto_s;
-    using Core.Application.Interface.IService;
-    using Microsoft.AspNetCore.Mvc;
-    using ViewModel;
+﻿using AutoMapper;
+using BetyParaAPI.ViewModel;
+using Core.Application.Dto_s;
+using Core.Application.Interface.IServices;
+using Microsoft.AspNetCore.Mvc;
 
+namespace WebApi.Controllers
+{
     [Route("api/[controller]")]
     [ApiController]
     public class PromotionController : ControllerBase
@@ -19,66 +19,78 @@
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public IActionResult GetPromotions()
+        [HttpPost]
+        public IActionResult CreatePromotion([FromBody] CreatePromotionViewModel createPromotionViewModel)
         {
-            var promotionsDto = _promotionService.GetPromotions();
-            var promotionsViewModel = _mapper.Map<IEnumerable<PromotionViewModel>>(promotionsDto);
-            return Ok(promotionsViewModel);
+            if (createPromotionViewModel == null)
+            {
+                return BadRequest("Promotion data is null");
+            }
+
+            var createPromotionDto = _mapper.Map<CreatePromotionDto>(createPromotionViewModel);
+            var promotion = _promotionService.CreatePromotion(createPromotionDto);
+
+            var promotionViewModel = _mapper.Map<PromotionViewModel>(promotion);
+            return Ok("Promotion added Succufly");
         }
 
-        [HttpGet("{promotionId}")]
-        public IActionResult GetPromotionById(Guid promotionId)
+        [HttpGet("{id}")]
+        public IActionResult GetPromotionById(Guid id)
         {
-            var promotionDto = _promotionService.GetPromotionById(promotionId);
-            if (promotionDto == null)
+            var promotion = _promotionService.GetPromotionById(id);
+
+            if (promotion == null)
             {
-                return NotFound("Promotion not found.");
+                return NotFound();
             }
-            var promotionViewModel = _mapper.Map<PromotionViewModel>(promotionDto);
+
+            var promotionViewModel = _mapper.Map<PromotionViewModel>(promotion);
             return Ok(promotionViewModel);
         }
 
-        [HttpPost]
-        public IActionResult AddPromotion([FromBody] PromotionViewModel promotionViewModel)
+        [HttpGet]
+        public IActionResult GetAllPromotions()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var promotionDto = _mapper.Map<PromotionDto>(promotionViewModel);
-            _promotionService.AddPromotion(promotionDto);
-            return Ok("Promotion added successfully");
+            var promotions = _promotionService.GetAllPromotions();
+            var promotionViewModels = _mapper.Map<IEnumerable<PromotionViewModel>>(promotions);
+            return Ok(promotionViewModels);
         }
 
-        [HttpPut("{promotionId}")]
-        public IActionResult UpdatePromotion(Guid promotionId, [FromBody] PromotionViewModel promotionViewModel)
+        [HttpPut("{id}")]
+        public IActionResult UpdatePromotion(Guid id, [FromBody] CreatePromotionViewModel updatePromotionViewModel)
         {
-            if (!ModelState.IsValid)
+            if (updatePromotionViewModel == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Promotion data is null");
             }
-            var existingPromotionDto = _promotionService.GetPromotionById(promotionId);
-            if (existingPromotionDto == null)
+
+            var updatePromotionDto = _mapper.Map<CreatePromotionDto>(updatePromotionViewModel);
+
+            try
             {
-                return NotFound("Promotion not found.");
+                _promotionService.UpdatePromotion(id, updatePromotionDto);
             }
-            _mapper.Map(promotionViewModel, existingPromotionDto);
-            _promotionService.UpdatePromotion(existingPromotionDto);
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+
             return NoContent();
         }
 
-        [HttpDelete("{promotionId}")]
-        public IActionResult DeletePromotion(Guid promotionId)
+        [HttpDelete("{id}")]
+        public IActionResult DeletePromotion(Guid id)
         {
-            var existingPromotionDto = _promotionService.GetPromotionById(promotionId);
-            if (existingPromotionDto == null)
+            try
             {
-                return NotFound("Promotion not found.");
+                _promotionService.DeletePromotion(id);
             }
-            _promotionService.DeletePromotion(promotionId);
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+
             return NoContent();
         }
     }
-
 }

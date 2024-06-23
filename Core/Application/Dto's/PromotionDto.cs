@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ﻿using Domaine.Entities;
 
 namespace Core.Application.Dto_s
@@ -10,19 +10,9 @@ namespace Core.Application.Dto_s
         public decimal Discount { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public ICollection<Product> Product { get; set; }
+        public List<Guid> ProductIds { get; set; }
 
-=======
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Core.Application.Dto_s
-{
-    internal class PromotionDto
-    {
->>>>>>> origin/main
+
     }
 }

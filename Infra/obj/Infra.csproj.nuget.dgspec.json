@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Infra\\Infra.csproj": {}
+    "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Infra\\Infra.csproj": {}
   },
   "projects": {
-    "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj": {
+    "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Core\\Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj",
+        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Core\\Core.csproj",
         "projectName": "Core",
-        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj",
+        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Core\\Core.csproj",
         "packagesPath": "C:\\Users\\helal\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\obj\\",
+        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\helal\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj": {
-                "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj"
+              "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj": {
+                "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj"
               }
             }
           }
@@ -43,15 +43,30 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-<<<<<<< HEAD
           "dependencies": {
             "AutoMapper": {
               "target": "Package",
               "version": "[13.0.1, )"
+            },
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.18, )"
             }
           },
-=======
->>>>>>> origin/main
           "imports": [
             "net461",
             "net462",
@@ -72,14 +87,14 @@
         }
       }
     },
-    "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj": {
+    "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj",
+        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj",
         "projectName": "Domaine",
-        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj",
+        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj",
         "packagesPath": "C:\\Users\\helal\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\obj\\",
+        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\helal\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -116,6 +131,20 @@
               "target": "Package",
               "version": "[6.4.4, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[7.0.18, )"
@@ -147,14 +176,14 @@
         }
       }
     },
-    "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Infra\\Infra.csproj": {
+    "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Infra\\Infra.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Infra\\Infra.csproj",
+        "projectUniqueName": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Infra\\Infra.csproj",
         "projectName": "Infra",
-        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Infra\\Infra.csproj",
+        "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Infra\\Infra.csproj",
         "packagesPath": "C:\\Users\\helal\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Infra\\obj\\",
+        "outputPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Infra\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\helal\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -171,11 +200,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj": {
-                "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Core\\Core.csproj"
+              "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Core\\Core.csproj": {
+                "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Core\\Core.csproj"
               },
-              "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj": {
-                "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\ParaPharmacy\\Domaine\\Domaine.csproj"
+              "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj": {
+                "projectPath": "C:\\Users\\helal\\OneDrive\\Bureau\\Para\\ParaPharmacyAPI\\Domaine\\Domaine.csproj"
               }
             }
           }
@@ -194,11 +223,33 @@
               "target": "Package",
               "version": "[13.0.1, )"
             },
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.18, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
               "version": "[7.0.18, )"
+            },
+            "Microsoft.SqlServer.SqlManagementObjects": {
+              "target": "Package",
+              "version": "[171.30.0, )"
             }
           },
           "imports": [

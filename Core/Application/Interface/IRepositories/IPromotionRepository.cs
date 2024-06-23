@@ -2,12 +2,13 @@
 
 namespace Core.Application.Interface.IRepositories;
 
-    public interface IPromotionRepository
-    {
-        IEnumerable<Promotion> GetPromotions();
-        Promotion GetPromotionById(Guid promotionId);
-        void InsertPromotion(Promotion promotion);
-        void UpdatePromotion(Promotion promotion);
-        void DeletePromotion(Guid promotionId);
-        void Save();
-    }
+public interface IPromotionRepository
+{
+    Promotion AddPromotion(Promotion promotion, List<Guid> productIds);
+    Promotion GetPromotionById(Guid promotionId);
+    IEnumerable<Promotion> GetAllPromotions();
+    void UpdatePromotion(Promotion promotion, List<Guid> productIds);
+    void DeletePromotion(Guid promotionId);
+    Promotion GetActivePromotionForProduct(Guid productId);
+
+}

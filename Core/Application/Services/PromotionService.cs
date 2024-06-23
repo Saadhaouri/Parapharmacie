@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Core.Application.Dto_s;
 using Core.Application.Interface.IRepositories;
-using Core.Application.Interface.IService;
+using Core.Application.Interface.IServices;
 using Domaine.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.Application.Services
 {
@@ -17,37 +20,58 @@ namespace Core.Application.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<PromotionDto> GetPromotions()
+        public PromotionDto CreatePromotion(CreatePromotionDto createPromotionDto)
         {
-            var promotions = _promotionRepository.GetPromotions();
-            return _mapper.Map<IEnumerable<PromotionDto>>(promotions);
+            var promotion = _mapper.Map<Promotion>(createPromotionDto);
+            promotion.PromotionID = Guid.NewGuid();
+
+            var addedPromotion = _promotionRepository.AddPromotion(promotion, createPromotionDto.ProductIds);
+
+            return _mapper.Map<PromotionDto>(addedPromotion);
         }
 
         public PromotionDto GetPromotionById(Guid promotionId)
         {
             var promotion = _promotionRepository.GetPromotionById(promotionId);
+
+            if (promotion == null)
+                throw new ArgumentNullException(nameof(promotion));
+
             return _mapper.Map<PromotionDto>(promotion);
         }
 
-        public void AddPromotion(PromotionDto promotion)
+        public IEnumerable<PromotionDto> GetAllPromotions()
         {
-            var promotionModel = _mapper.Map<Promotion>(promotion);
-            _promotionRepository.InsertPromotion(promotionModel);
-            _promotionRepository.Save();
+            var promotions = _promotionRepository.GetAllPromotions();
+            return _mapper.Map<IEnumerable<PromotionDto>>(promotions);
         }
 
-        public void UpdatePromotion(PromotionDto promotion)
+        public void UpdatePromotion(Guid promotionId, CreatePromotionDto updatePromotionDto)
         {
-            var promotionModel = _mapper.Map<Promotion>(promotion);
-            _promotionRepository.UpdatePromotion(promotionModel);
-            _promotionRepository.Save();
+            var promotion = _promotionRepository.GetPromotionById(promotionId);
+
+            if (promotion == null)
+                throw new ArgumentNullException(nameof(promotion));
+
+            // Map the updated properties to the existing promotion
+            promotion.Code = updatePromotionDto.Code;
+            promotion.Discount = updatePromotionDto.Discount;
+            promotion.StartDate = updatePromotionDto.StartDate; 
+            promotion.EndDate = updatePromotionDto.EndDate;
+
+            // Update ProductPromotions
+            promotion.ProductPromotions.Clear();
+            foreach (var productId in updatePromotionDto.ProductIds)
+            {
+                promotion.ProductPromotions.Add(new ProductPromotion { PromotionId = promotion.PromotionID, ProductId = productId });
+            }
+
+            _promotionRepository.UpdatePromotion(promotion, updatePromotionDto.ProductIds);
         }
 
         public void DeletePromotion(Guid promotionId)
         {
             _promotionRepository.DeletePromotion(promotionId);
-            _promotionRepository.Save();
         }
     }
-
 }
