@@ -23,6 +23,7 @@ namespace BetyParaAPI.Mapping
 
             CreateMap<OrderDto, OrderViewModel>().ReverseMap();
             CreateMap<CreateOrderDto, CreateOrderViewModel>().ReverseMap();
+            CreateMap<CreateOrderDto, Order>().ReverseMap();
 
 
             // Promotion mappings

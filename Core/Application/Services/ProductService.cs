@@ -58,6 +58,7 @@ namespace Core.Application.Services
             product.Name = productDto.Name;
             product.Description = productDto.Description;
             product.Price = productDto.Price;
+            product.PriceForSale = productDto.PriceForSale;
             product.CategoryID = productDto.CategoryID;
             product.Quantity = productDto.Quantity;
             product.DateExp = productDto.DateExp;

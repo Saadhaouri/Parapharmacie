@@ -69,27 +69,27 @@ namespace BetyParaAPI.Controllers
             return Ok(new { Token = token });
         }
 
-    //    [HttpPost("changepassword")]
-    //    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel changePasswordViewModel)
-    //    {
-    //        if (!ModelState.IsValid)
-    //        {
-    //            return BadRequest(ModelState);
-    //        }
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel changePasswordViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-    //        var result = await _accountService.ChangePasswordAsync(changePasswordViewModel.UserId, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
+            var result = await _accountService.ChangePasswordAsync(changePasswordViewModel.UserId, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
 
-    //        if (result.Succeeded)
-    //        {
-    //            // Password change successful
-    //            return Ok(new { Message = "Password changed successfully" });
-    //        }
-    //        else
-    //        {
-    //            // Password change failed, return error messages
-    //            var errors = result.Errors.Select(e => e.Description).ToList();
-    //            return BadRequest(new { Errors = errors });
-    //        }
-    //    }
-   }
+            if (result.Succeeded)
+            {
+                // Password change successful
+                return Ok(new { Message = "Password changed successfully" });
+            }
+            else
+            {
+                // Password change failed, return error messages
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new { Errors = errors });
+            }
+        }
+    }
 }
