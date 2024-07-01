@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BetyParaAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de588a10f3a399c3d3930c941496904912f63543")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c17cd275c27d4373cfc260bf2217f283cde09cd8")]
 [assembly: System.Reflection.AssemblyProductAttribute("BetyParaAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BetyParaAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

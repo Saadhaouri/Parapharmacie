@@ -1,6 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
-
+﻿using Microsoft.AspNetCore.Identity;
 namespace Domaine.Entities;
 
 public class User : IdentityUser

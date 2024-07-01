@@ -12,25 +12,21 @@ namespace Infra.Repository
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly UserManager<User> _userManager1;
+        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-
         public AccountRepository(UserManager<User> userManager,
             SignInManager<User> signInManager,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor
-            )
+            IHttpContextAccessor httpContextAccessor)
         {
-            _userManager1 = userManager;
+            _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-
         }
-
 
         public async Task<IdentityResult> SignUpAsync(SignUpUser signUpUser)
         {
@@ -42,8 +38,7 @@ namespace Infra.Repository
                 UserName = signUpUser.Email
             };
 
-            return await _userManager1.CreateAsync(user, signUpUser.Password);
-
+            return await _userManager.CreateAsync(user, signUpUser.Password);
         }
 
         public async Task<string> LoginAsync(SignInUser signInUser)
@@ -56,8 +51,8 @@ namespace Infra.Repository
             }
 
             // Retrieve the user from the username or email
-            var user = await _userManager1.FindByNameAsync(signInUser.UsernameOrEmail) ??
-                       await _userManager1.FindByEmailAsync(signInUser.UsernameOrEmail);
+            var user = await _userManager.FindByNameAsync(signInUser.UsernameOrEmail) ??
+                       await _userManager.FindByEmailAsync(signInUser.UsernameOrEmail);
 
             if (user == null)
             {
@@ -65,11 +60,11 @@ namespace Infra.Repository
             }
 
             var authClaims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, signInUser.UsernameOrEmail),
-        new Claim(ClaimTypes.NameIdentifier, user.Id), // Use the user's ID from UserManager
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-    };
+            {
+                new Claim(ClaimTypes.Name, signInUser.UsernameOrEmail),
+                new Claim(ClaimTypes.NameIdentifier, user.Id), // Use the user's ID from UserManager
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));
 
@@ -86,7 +81,7 @@ namespace Infra.Repository
 
         public async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
         {
-            var user = await _userManager1.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 // User not found
@@ -94,10 +89,36 @@ namespace Infra.Repository
             }
 
             // Attempt to change the password
-            return await _userManager1.ChangePasswordAsync(user, currentPassword, newPassword);
+            return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
         }
 
+        public async Task<string> GeneratePasswordResetTokenAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                // Handle the case where the user is not found
+                return null;
+            }
 
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return token;
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                // Handle the case where the user is not found
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Description = "User not found."
+                });
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+            return result;
+        }
     }
-
 }

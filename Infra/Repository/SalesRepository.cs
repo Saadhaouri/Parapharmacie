@@ -1,4 +1,4 @@
-﻿using Core.Application.Interface.IService;
+﻿using Core.Application.Interface.IRepositories;
 using Domaine.Entities;
 using Infra.DATA;
 using Microsoft.EntityFrameworkCore;

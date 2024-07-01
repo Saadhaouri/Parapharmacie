@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Core.Application.Dto_s;
-using Core.Application.Interface.IRepositories;
 using Core.Application.Interface.IService;
+using Core.Application.Interface.IRepositories;
 using Domaine.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class SalesService : ISalesService
 {
@@ -101,5 +104,16 @@ public class SalesService : ISalesService
         var sales = _salesRepository.GetSales()
             .Where(s => s.SaleDate.Date >= startDate && s.SaleDate.Date <= DateTime.UtcNow.Date);
         return sales.Sum(s => s.Profit);
+    }
+
+    public IEnumerable<SaleDto> GetAllSales()
+    {
+        var sales = _salesRepository.GetSales();
+        return _mapper.Map<IEnumerable<SaleDto>>(sales);
+    }
+
+    public void DeleteAllSales()
+    {
+        _salesRepository.DeleteAllSales();
     }
 }
