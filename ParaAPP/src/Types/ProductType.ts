@@ -1,6 +1,6 @@
 // ProductType.ts
 
-export interface Product {
+export default interface Product {
   productID: string;
   name: string;
   description: string;
@@ -10,8 +10,7 @@ export interface Product {
   categoryID: string;
   dateExp: string;
 }
-export interface CreateProduct {
-  productID: string;
+export default interface CreateProduct {
   name: string;
   description: string;
   price: number;

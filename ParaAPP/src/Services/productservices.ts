@@ -1,7 +1,21 @@
 import axios from "axios";
-import Product from "../Types/ProductType";
 
-const API_URL = "https://localhost:7016/api/Product";
+type ProductBase = {
+  name: string;
+  description: string;
+  price: number;
+  priceForSale: number;
+  quantity: number;
+  categoryID: string;
+  dateExp: string;
+  // Include other properties if necessary
+};
+
+type Product = ProductBase & {
+  productId: string;
+};
+
+const API_URL = "http://localhost:88/Product";
 
 export const getAllProducts = async () => {
   const response = await axios.get(API_URL);
@@ -13,12 +27,12 @@ export const getProductById = async (id: string) => {
   return response.data;
 };
 
-export const createProduct = async (product: Product) => {
+export const createProduct = async (product: ProductBase) => {
   const response = await axios.post(API_URL, product);
   return response.data;
 };
 
-export const updateProduct = async (id: string, product: Product) => {
+export const updateProduct = async (id: string, product: ProductBase) => {
   await axios.put(`${API_URL}/${id}`, product);
 };
 

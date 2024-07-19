@@ -6,15 +6,28 @@ import {
   createSupplier,
   deleteSupplier,
   updateSupplier,
-} from "../../Services/supplierServices";
-import Supplier from "../../Types/SupplierType";
-import DataTable from "../../components/DataTable";
+} from "../Services/supplierServices";
+import DataTable from "../components/DataTable";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 
+type SupplierBase = {
+  name: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  // Include other properties if necessary
+};
+
+type Supplier = SupplierBase & {
+  supplierId: string;
+};
+
+type AddSupplier = SupplierBase;
+
 // Validation schema for the supplier form
-const supplierSchema = yup.object().shape({
+const supplierSchema = yup.object({
   name: yup.string().required("Le nom est requis"),
   contactPerson: yup.string().required("Les coordonnées sont requises"),
   email: yup.string().required("L'email est requise"),
@@ -33,14 +46,14 @@ const SupplierManagementPage = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Supplier>({
+  } = useForm<AddSupplier>({
     defaultValues: {},
     resolver: yupResolver(supplierSchema),
   });
 
   useEffect(() => {
     axios
-      .get("https://localhost:7016/api/Supplier")
+      .get("http://localhost:88/Supplier")
       .then((response) => {
         setSupplierList(response.data);
       })
@@ -122,22 +135,30 @@ const SupplierManagementPage = () => {
     {
       accessorKey: "name",
       header: "Nom",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "contactPerson",
       header: "Coordonnées",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "email",
       header: "Email",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "phone",
       header: "Téléphone",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
   ];
 
@@ -145,7 +166,9 @@ const SupplierManagementPage = () => {
     <div className="h-screen overflow-y-auto bg-gray-200">
       <div className="flex items-center justify-between p-2  ">
         <div className="pl-4 text-left">
-          <h1 className="text-3xl font-bold ">Gestion de Fournisseurs</h1>
+          <h1 className="text-1xl font-bold bg-white p-2 rounded shadow-md ">
+            Gestion de Fournisseurs
+          </h1>
         </div>
         <div className="flex items-center justify-end p-4 mx-3">
           <button
@@ -174,7 +197,9 @@ const SupplierManagementPage = () => {
       >
         <form
           onSubmit={handleSubmit((data, e) =>
-            isEdit ? handleUpdateSupplier(data) : handleCreateSupplier(data, e)
+            isEdit
+              ? handleUpdateSupplier(data as Supplier)
+              : handleCreateSupplier(data as Supplier, e)
           )}
           className="space-y-6"
           ref={formRef}

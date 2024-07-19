@@ -4,32 +4,48 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { deleteClient } from "../../Services/clientServices";
-import { createProduct, updateProduct } from "../../Services/productservices";
+import {
+  createProduct,
+  deleteProduct,
+  updateProduct,
+} from "../../Services/productservices";
 import { Category } from "../../Types/CategoryType";
-import { CreateProduct, Product } from "../../Types/ProductType";
 import DataTable from "../../components/DataTable";
+import { FaPlus } from "react-icons/fa";
 
-// Validation schema for the client form
-const productSchema = yup.object().shape({
+const productSchema = yup.object({
   name: yup.string().required("Le nom est requis"),
   description: yup.string().required("La description est requise"),
   price: yup.number().required("Le prix est requis"),
   priceForSale: yup.number().required("Le prix de vente est requis"),
   quantity: yup.number().required("La quantité est requise"),
-  dateExp: yup.date().required("La date d'expiration est requise"),
+  dateExp: yup.string().required("La date d'expiration est requise"),
   categoryID: yup.string().required("La catégorie est requise"),
 });
 
-const formatDate = (date) => {
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
+type ProductBase = {
+  name: string;
+  description: string;
+  price: number;
+  priceForSale: number;
+  quantity: number;
+  categoryID: string;
+  dateExp: string;
+  // Include other properties if necessary
 };
 
-const formatDateForInput = (date) => {
+type Product = ProductBase & {
+  productID: string;
+};
+
+type AddProduct = ProductBase;
+
+interface TableCellProps {
+  getValue: () => any;
+  record: any; // Consider replacing 'any' with the actual type of your row data
+}
+
+const formatDateForInput = (date: string) => {
   const d = new Date(date);
   const day = String(d.getDate()).padStart(2, "0");
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -51,7 +67,6 @@ const ProductManagementPage = () => {
     reset,
   } = useForm<Product>({
     defaultValues: {
-      productID: "",
       name: "",
       description: "",
       price: 0,
@@ -60,15 +75,15 @@ const ProductManagementPage = () => {
       dateExp: "",
       categoryID: "",
     },
-    resolver: yupResolver(productSchema),
+    resolver: yupResolver(productSchema) as any,
   });
 
   useEffect(() => {
     const fetchProductsAndCategories = async () => {
       try {
         const [productsResponse, categoriesResponse] = await Promise.all([
-          axios.get("https://localhost:7016/api/Product"),
-          axios.get("https://localhost:7016/api/Category"),
+          axios.get("http://localhost:88/Product"),
+          axios.get("http://localhost:88/Category"),
         ]);
         setProductList(productsResponse.data);
         setCategories(categoriesResponse.data);
@@ -83,15 +98,18 @@ const ProductManagementPage = () => {
     fetchProductsAndCategories();
   }, []);
 
-  const handleCreateProduct: SubmitHandler<CreateProduct> = async (data, e) => {
+  const handleCreateProduct: SubmitHandler<AddProduct> = async (data) => {
     try {
       await createProduct(data);
       setIsModalVisible(false);
-      message.success("Client ajouté avec succès");
+      message.success("Produit ajouté avec succès");
       reset();
+      // Refresh the product list after adding a product
+      const productsResponse = await axios.get("http://localhost:88/Product");
+      setProductList(productsResponse.data);
     } catch (error) {
-      message.error("Erreur lors de l'ajout du client");
-      console.error("Failed to create client:", error);
+      message.error("Erreur lors de l'ajout du produit");
+      console.error("Failed to create produit:", error);
     }
   };
 
@@ -99,26 +117,32 @@ const ProductManagementPage = () => {
     try {
       await updateProduct(data.productID, data);
       setIsModalVisible(false);
-      message.success("Client mis à jour avec succès");
+      message.success("produit mis à jour avec succès");
+      // Refresh the product list after updating a product
+      const productsResponse = await axios.get("http://localhost:88/Product");
+      setProductList(productsResponse.data);
     } catch (error) {
-      message.error("Erreur lors de la mise à jour du client");
-      console.error("Failed to update client:", error);
+      message.error("Erreur lors de la mise à jour du produit");
+      console.error("Failed to update product :", error);
     }
   };
 
   const handleDeleteProduct = async (productId: string) => {
     try {
-      await deleteClient(productId);
-      message.success("Client supprimé avec succès");
+      await deleteProduct(productId);
+      message.success("Product supprimé avec succès");
+      // Refresh the product list after deleting a product
+      const productsResponse = await axios.get("http://localhost:88/Product");
+      setProductList(productsResponse.data);
     } catch (error) {
-      message.error("Erreur lors de la suppression du client");
-      console.error("Failed to delete client:", error);
+      message.error("Erreur lors de la suppression du produit");
+      console.error("Failed to delete produit:", error);
     }
   };
 
   const confirmDelete = (productId: string) => {
     Modal.confirm({
-      title: "Êtes-vous sûr de vouloir supprimer ce client?",
+      title: "Êtes-vous sûr de vouloir supprimer ce produit?",
       content: "Cette action ne peut pas être annulée.",
       okText: "Oui",
       okType: "danger",
@@ -130,13 +154,12 @@ const ProductManagementPage = () => {
   const showModal = () => {
     setIsEdit(false);
     reset({
-      productID: "",
       name: "",
       description: "",
       price: 0,
       priceForSale: 0,
       quantity: 0,
-      dateExp: formatDateForInput(new Date()),
+      dateExp: new Date().toISOString().split("T")[0],
       categoryID: "",
     });
     setIsModalVisible(true);
@@ -167,46 +190,47 @@ const ProductManagementPage = () => {
     {
       accessorKey: "name",
       header: "Nom",
-      Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+      cell: ({ cell }: { cell: TableCellProps }) => (
         <span>{cell.getValue()}</span>
       ),
     },
     {
       accessorKey: "description",
       header: "Description",
-      Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+      cell: ({ cell }: { cell: TableCellProps }) => (
         <span>{cell.getValue()}</span>
       ),
     },
     {
       accessorKey: "price",
       header: "Prix",
-      Cell: ({ cell }: { cell: { getValue: () => number } }) => (
+      cell: ({ cell }: { cell: TableCellProps }) => (
         <span>{cell.getValue()}</span>
       ),
     },
     {
       accessorKey: "priceForSale",
       header: "Prix de vente",
-      Cell: ({ cell }: { cell: { getValue: () => number } }) => (
+      cell: ({ cell }: { cell: TableCellProps }) => (
         <span>{cell.getValue()}</span>
       ),
     },
     {
       accessorKey: "quantity",
       header: "Quantité",
-      Cell: ({ cell }: { cell: { getValue: () => number } }) => (
+      cell: ({ cell }: { cell: TableCellProps }) => (
         <span>{cell.getValue()}</span>
       ),
     },
     {
       accessorKey: "dateExp",
       header: "Date d'expiration",
-      Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+      cell: ({ cell }: { cell: TableCellProps }) => (
         <span>{new Date(cell.getValue()).toLocaleDateString()}</span>
       ),
     },
   ];
+
   // Calculate statistics
   const productCount = productList.length;
   const totalQuantity = productList.reduce(
@@ -214,7 +238,7 @@ const ProductManagementPage = () => {
     0
   );
   const highQuantityProducts = productList.filter(
-    (product) => product.quantity > 100
+    (product) => product.quantity > 60
   ).length;
   const highPriceProducts = productList.filter(
     (product) => product.price > 100
@@ -225,63 +249,62 @@ const ProductManagementPage = () => {
       <div className="flex items-center justify-between p-2">
         <div className="pl-4 text-left">
           <h1 className="text-1xl font-bold bg-white p-2 rounded shadow-md ">
-            Gestion des Produit
+            Gestion des Produits
           </h1>
         </div>
         <div className="flex items-center justify-end p-4 mx-3">
           <button
             onClick={showModal}
-            className="px-6 py-2 flex items-center min-w-[120px] text-center text-white bg-emerald-400 border-emerald-600 shadow-xl hover:shadow rounded active:text-white-500 focus:ring"
+            className="px-4 py-2 flex items-center min-w-[120px] text-center text-white bg-emerald-400 border-emerald-600 shadow-xl hover:shadow rounded active:text-white-500 focus:ring"
           >
+            <FaPlus className="mr-2" />
             Ajouter un produit
           </button>
         </div>
       </div>
-      <div className="   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4  mr-4 ml-4 mb-3 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mr-4 ml-4 mb-3">
         <div className="p-4 bg-gradient-to-r from-green-500 to-green-300 rounded shadow-md">
-          <h2 className="text-lg font-semibold text-white ">
+          <h2 className="text-lg font-semibold text-white">
             Nombre de produits
           </h2>
-          <p className="text-2xl text-white font-bold flex  justify-center">
+          <p className="text-2xl text-white font-bold flex justify-center">
             {productCount}
           </p>
         </div>
-        <div className="p-4 bg-gradient-to-r from-violet-800 to-indigo-600 rounded shadow-md">
-          <h2 className="text-lg font-semibold  text-white">Quantité totale</h2>
-          <p className="text-2xl font-bold text-white flex justify-center">
+        <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-300 rounded shadow-md">
+          <h2 className="text-lg font-semibold text-white">Quantité totale</h2>
+          <p className="text-2xl text-white font-bold flex justify-center">
             {totalQuantity}
           </p>
         </div>
-        <div className="p-4 bg-gradient-to-r from-indigo-500 to-blue-500 rounded shadow-md">
-          <h2 className="text-lg font-semibold   text-white">
-            Produits en grande quantité
+        <div className="p-4 bg-gradient-to-r from-yellow-500 to-yellow-300 rounded shadow-md">
+          <h2 className="text-lg font-semibold text-white">
+            Produits en quantité élevé
           </h2>
-          <p className="text-2xl  font-bold text-white flex justify-center">
+          <p className="text-2xl text-white font-bold flex justify-center">
             {highQuantityProducts}
           </p>
         </div>
-        <div className="p-4 bg-gradient-to-r from-cyan-500 to-blue-500  rounded shadow-md">
+        <div className="p-4 bg-gradient-to-r from-red-600 to-red-400 rounded shadow-md">
           <h2 className="text-lg font-semibold text-white">Produits chers</h2>
-          <p className="text-2xl font-bold text-white flex justify-center">
+          <p className="text-2xl text-white font-bold flex justify-center">
             {highPriceProducts}
           </p>
         </div>
       </div>
-      <div className="pl-4 pr-2 w-[99%]">
+      <div className="mt-2 p-2 mx-4">
         <DataTable
-          data={productList}
           columns={columns}
-          onDelete={(row) => confirmDelete(row.original.productID)}
+          data={productList}
           onUpdate={(row) => showEditModal(row.original)}
+          onDelete={confirmDelete}
         />
       </div>
       <Modal
-        title={isEdit ? "Modifier le produit" : "Ajouter un produit"}
+        title={isEdit ? "Modifier Produit" : "Ajouter Produit"}
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okText={isEdit ? "Modifier" : "Ajouter"}
-        cancelText="Annuler"
       >
         <form
           onSubmit={handleSubmit((data, e) =>
@@ -299,7 +322,7 @@ const ProductManagementPage = () => {
               <div className="flex flex-col space-y-2">
                 <input
                   {...field}
-                  placeholder="Nom"
+                  placeholder="Nom du produit"
                   className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
                 />
                 {errors.name && (
@@ -308,7 +331,6 @@ const ProductManagementPage = () => {
               </div>
             )}
           />
-
           <Controller
             name="description"
             control={control}
@@ -327,7 +349,6 @@ const ProductManagementPage = () => {
               </div>
             )}
           />
-
           <Controller
             name="price"
             control={control}
@@ -335,8 +356,8 @@ const ProductManagementPage = () => {
               <div className="flex flex-col space-y-2">
                 <input
                   {...field}
-                  type="number"
                   placeholder="Prix"
+                  type="number"
                   className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
                 />
                 {errors.price && (
@@ -345,7 +366,6 @@ const ProductManagementPage = () => {
               </div>
             )}
           />
-
           <Controller
             name="priceForSale"
             control={control}
@@ -353,8 +373,8 @@ const ProductManagementPage = () => {
               <div className="flex flex-col space-y-2">
                 <input
                   {...field}
-                  type="number"
                   placeholder="Prix de vente"
+                  type="number"
                   className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
                 />
                 {errors.priceForSale && (
@@ -365,7 +385,6 @@ const ProductManagementPage = () => {
               </div>
             )}
           />
-
           <Controller
             name="quantity"
             control={control}
@@ -373,8 +392,8 @@ const ProductManagementPage = () => {
               <div className="flex flex-col space-y-2">
                 <input
                   {...field}
-                  type="number"
                   placeholder="Quantité"
+                  type="number"
                   className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
                 />
                 {errors.quantity && (
@@ -385,27 +404,6 @@ const ProductManagementPage = () => {
               </div>
             )}
           />
-
-          <Controller
-            name="dateExp"
-            control={control}
-            render={({ field }) => (
-              <div className="flex flex-col space-y-2">
-                <input
-                  {...field}
-                  type="date"
-                  placeholder="Date d'expiration"
-                  className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
-                />
-                {errors.dateExp && (
-                  <p className="text-red-500 text-sm">
-                    {errors.dateExp.message}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-
           <Controller
             name="categoryID"
             control={control}
@@ -415,8 +413,7 @@ const ProductManagementPage = () => {
                   {...field}
                   className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
                 >
-                  <option value="">Sélectionner une catégorie</option>
-                  {categories?.map((category) => (
+                  {categories.map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.name}
                     </option>
@@ -430,6 +427,26 @@ const ProductManagementPage = () => {
               </div>
             )}
           />
+          <Controller
+            name="dateExp"
+            control={control}
+            render={({ field }) => (
+              <div className="flex flex-col space-y-2">
+                <input
+                  {...field}
+                  placeholder="Date d'expiration"
+                  type="date"
+                  className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
+                />
+                {errors.dateExp && (
+                  <p className="text-red-500 text-sm">
+                    {errors.dateExp.message}
+                  </p>
+                )}
+              </div>
+            )}
+          />
+          {/* Add other form fields as necessary */}
         </form>
       </Modal>
     </div>

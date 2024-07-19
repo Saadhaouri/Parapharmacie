@@ -29,6 +29,11 @@ const clientSchema = yup.object().shape({
   }),
 });
 
+interface TableCellProps {
+  getValue: () => any;
+  record: any; // Consider replacing 'any' with the actual type of your row data
+}
+
 const ClientManagementPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -67,7 +72,7 @@ const ClientManagementPage = () => {
       });
   }, [clientList]);
 
-  const handleCreateClient: SubmitHandler<CreateClient> = async (data, e) => {
+  const handleCreateClient: SubmitHandler<CreateClient> = async (data) => {
     try {
       await createClient(data);
       setIsModalVisible(false);
@@ -151,32 +156,42 @@ const ClientManagementPage = () => {
     {
       accessorKey: "firstname",
       header: "Prénom",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "lastName",
       header: "Nom",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "cin",
       header: "CIN",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "phoneNumber",
       header: "Téléphone",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "email",
       header: "Email",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "address",
       header: "Adresse",
-      Cell: ({ cell }) => {
+      Cell: ({ cell }: { cell: TableCellProps }) => {
         const address = cell.getValue();
         return (
           <span>{`${address.nr} ${address.street}, ${address.neighborhood}, ${address.city}`}</span>

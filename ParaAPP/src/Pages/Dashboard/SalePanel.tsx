@@ -9,6 +9,7 @@ import {
   getWeeklySales,
 } from "../../Services/salesService";
 import { FcSalesPerformance } from "react-icons/fc";
+import { Sale } from "../../Types/SaleTypes";
 
 const SalePanel = () => {
   const [dailyProfit, setDailyProfit] = useState(0);
@@ -61,7 +62,7 @@ const SalePanel = () => {
             <h1 className="text-4xl font-extrabold">{dailySales.length}</h1>
             {/* Display daily profit */}
             <h2 className="text-2xl font-semibold mt-1">
-              Bénéfices: {dailyProfit}
+              Bénéfices: {dailyProfit} DH
             </h2>
           </div>
         </div>
@@ -78,7 +79,7 @@ const SalePanel = () => {
             <h1 className="text-4xl font-extrabold">{weeklySales.length}</h1>
             {/* Display weekly profit */}
             <h2 className="text-2xl font-semibold mt-1  ">
-              Bénéfices: {weeklyProfit}
+              Bénéfices: {weeklyProfit} DH
             </h2>
           </div>
         </div>
@@ -95,7 +96,7 @@ const SalePanel = () => {
             <h1 className="text-4xl font-extrabold">{monthlySales.length}</h1>
             {/* Display monthly profit */}
             <h2 className="text-2xl font-semibold mt-1">
-              Bénéfices: {monthlyProfit}
+              Bénéfices: {monthlyProfit} DH
             </h2>
           </div>
         </div>

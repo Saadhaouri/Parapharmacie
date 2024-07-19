@@ -1,7 +1,17 @@
 import axios from "axios";
-import Supplier from "../Types/SupplierType";
+type SupplierBase = {
+  name: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  // Include other properties if necessary
+};
 
-const API_URL = "https://localhost:7016/api/Supplier";
+type Supplier = SupplierBase & {
+  supplierId: string;
+};
+
+const API_URL = "http://localhost:88/Supplier";
 
 export const getAllSuppliers = async () => {
   const response = await axios.get(API_URL);

@@ -8,7 +8,7 @@ export const useGetProductsByPromotionId = (promotionId: string) => {
   useEffect(() => {
     if (promotionId) {
       axios
-        .get(`https://localhost:7016/api/Promotion/${promotionId}/products`)
+        .get(`http://localhost:88/Promotion/${promotionId}/products`)
         .then((response) => {
           setProducts(response.data);
           setLoading(false);

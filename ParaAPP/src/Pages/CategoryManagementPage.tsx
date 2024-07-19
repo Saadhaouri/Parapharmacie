@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { DeleteOutlined, EditOutlined, FrownOutlined } from "@ant-design/icons";
 import { Button, Modal, message } from "antd";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  FrownOutlined,
-} from "@ant-design/icons";
 import { useGetProductsByCategoryId } from "../hooks/useCategories";
 
 interface Category {
@@ -26,7 +21,7 @@ const CategoryManagementPage: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("https://localhost:7016/api/Category")
+      .get("http://localhost:88/Category")
       .then((response) => {
         setListcategories(response.data);
       })
@@ -67,7 +62,7 @@ const CategoryManagementPage: React.FC = () => {
       title: "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
       onOk: () => {
         axios
-          .delete(`https://localhost:7016/api/Category/${categoryId}`)
+          .delete(`http://localhost:88/Category/${categoryId}`)
           .then(() => {
             setListcategories(
               listcategories.filter((c) => c.id !== categoryId)
@@ -89,7 +84,7 @@ const CategoryManagementPage: React.FC = () => {
 
   const onCreateSubmit = (data: Category) => {
     axios
-      .post("https://localhost:7016/api/Category", data)
+      .post("http://localhost:88/Category", data)
       .then((response) => {
         setListcategories([...listcategories, response.data]);
         message.success("Catégorie ajoutée avec succès !");
@@ -109,7 +104,7 @@ const CategoryManagementPage: React.FC = () => {
   const onUpdateSubmit = (data: Category) => {
     if (currentCategory) {
       axios
-        .put(`https://localhost:7016/api/Category/${currentCategory.id}`, data)
+        .put(`http://localhost:88/Category/${currentCategory.id}`, data)
         .then((response) => {
           setListcategories(
             listcategories.map((c) =>
@@ -183,28 +178,24 @@ const CategoryManagementPage: React.FC = () => {
               {products.length > 0 ? (
                 products.map((product) => (
                   <div
-                    key={product.id}
-                    className="w-full max-w-xs bg-gray-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between"
+                    key={product.productID}
+                    className="bg-gradient-to-r from-violet-200 to-pink-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                   >
-                    <div>
-                      <div className="px-4 py-2">
-                        <h3 className="text-gray-800 font-bold text-lg">
-                          {product.name}
-                        </h3>
-                      </div>
-                      <div className="px-4 py-2">
-                        <p className="text-gray-600">{product.description}</p>
-                      </div>
-                    </div>
-                    <div className="px-4 py-2 flex justify-end items-center">
-                      <span>
+                    <div className="p-4">
+                      <h3 className="text-gray-800 font-bold text-lg truncate">
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-600 truncate">
+                        {product.description}
+                      </p>
+                      <div className="flex justify-end items-center mt-2">
                         <span className="text-gray-900 font-semibold">
                           Prix :
                         </span>
                         <span className="text-gray-900">
-                          {product.price} dh{" "}
+                          {product.price} dh
                         </span>
-                      </span>
+                      </div>
                     </div>
                   </div>
                 ))

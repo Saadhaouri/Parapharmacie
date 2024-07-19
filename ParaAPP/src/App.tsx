@@ -8,43 +8,87 @@ import CategoryManagementPage from "./Pages/CategoryManagementPage";
 import ProductManagementPage from "./Pages/Products/ProductManagementPage";
 import OrderManagementPage from "./Pages/OrderManagementPage";
 import UserManegement from "./Pages/UserManegement";
-import SupplierManagementPage from "./Pages/Supplier/SupplierManagementPage";
+import SupplierManagementPage from "./Pages/SupplierManagementPage";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import StockManagement from "./Pages/StockManegement";
 import PromotionManagementPage from "./Pages/PromotionManagementPage";
+import LoginPage from "./Pages/LoginPage";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import authStore from "./auth/authStore";
+import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
 
 // Create a client
 const queryClient = new QueryClient();
 
 function App() {
+  const isAuth = authStore((state) => state.isAuth);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex flex-col h-screen">
-        {/* Wrap your app with QueryClientProvider */}
         <Router>
-          <Header />
+          {isAuth && <Header />}
           <div className="flex flex-1 overflow-hidden">
-            <SideMenu />
+            {isAuth && <SideMenu />}
             <main className="flex-1 overflow-y-auto bg-gray-100">
               <Routes>
-                <Route path="/" element={<DashboardPage />} />
-                <Route path="/profile" element={<UserManegement />} />
-                <Route path="/order" element={<OrderManagementPage />} />
-                <Route path="/clients" element={<ClientManagementPage />} />
-                <Route path="/supplier" element={<SupplierManagementPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route
+                  path="/forgot-password"
+                  element={<ForgotPasswordPage />}
+                />
+                <Route
+                  path="/"
+                  element={<ProtectedRoute element={<DashboardPage />} />}
+                />
+                <Route
+                  path="/profile"
+                  element={<ProtectedRoute element={<UserManegement />} />}
+                />
+                <Route
+                  path="/order"
+                  element={<ProtectedRoute element={<OrderManagementPage />} />}
+                />
+                <Route
+                  path="/clients"
+                  element={
+                    <ProtectedRoute element={<ClientManagementPage />} />
+                  }
+                />
+                <Route
+                  path="/supplier"
+                  element={
+                    <ProtectedRoute element={<SupplierManagementPage />} />
+                  }
+                />
                 <Route
                   path="/categories"
-                  element={<CategoryManagementPage />}
+                  element={
+                    <ProtectedRoute element={<CategoryManagementPage />} />
+                  }
                 />
-                <Route path="/products" element={<ProductManagementPage />} />
-                <Route path="/stock" element={<StockManagement />} />
+                <Route
+                  path="/products"
+                  element={
+                    <ProtectedRoute element={<ProductManagementPage />} />
+                  }
+                />
+                <Route
+                  path="/stock"
+                  element={<ProtectedRoute element={<StockManagement />} />}
+                />
                 <Route
                   path="/promotions"
-                  element={<PromotionManagementPage />}
+                  element={
+                    <ProtectedRoute element={<PromotionManagementPage />} />
+                  }
                 />
-                <Route path="/orders" element={<OrderManagementPage />} />
+                <Route
+                  path="/orders"
+                  element={<ProtectedRoute element={<OrderManagementPage />} />}
+                />
               </Routes>
             </main>
           </div>

@@ -1,4 +1,4 @@
-import { Modal, message, Select } from "antd"; // Import Select from antd
+import { Modal, message, Select } from "antd";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
@@ -11,19 +11,60 @@ import {
   deleteOrder,
   updateOrder,
 } from "../Services/orderService";
-import { CreateOrder, Order } from "../Types/OrderTypes";
-import { Supplier } from "../Types/SupplierType"; // Assuming you have Supplier type
-import { Client } from "../Types/ClientType"; // Assuming you have Client type
-import { Product } from "../Types/ProductType";
+import { Client } from "../Types/ClientType";
 
-// Validation schema for the order form
-const orderSchema = yup.object().shape({
+type Supplier = {
+  supplierId: string;
+  name: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+};
+
+type Product = {
+  productID: string;
+  name: string;
+  description: string;
+  price: number;
+  priceForSale: number;
+  quantity: number;
+  categoryID: string;
+  dateExp: string;
+};
+
+const OrderSchema = yup.object().shape({
+  orderID: yup.string().required("Le fournisseur est requis"),
   supplierId: yup.string().required("Le fournisseur est requis"),
-  totalAmount: yup.number().required("Le montant total est requis").positive(),
+  orderDate: yup
+    .date()
+    .required("La date de la commande est requise")
+    .nullable(),
+  totalAmount: yup
+    .number()
+    .required("Le montant total est requis")
+    .positive("Le montant doit être positif")
+    .integer("Le montant doit être un entier"),
   status: yup.string().required("Le statut est requis"),
   clientId: yup.string().required("Le client est requis"),
-  productIds: yup.array().of(yup.string()).required("Les produits sont requis"),
+  productIds: yup
+    .array()
+    .of(yup.string().required())
+    .required("Les produits sont requis"),
 });
+
+interface TableCellProps {
+  getValue: () => any;
+  record: any;
+}
+interface Order {
+  orderID: string;
+  supplierId: string;
+  orderDate: Date | null;
+  totalAmount: number;
+  status: string;
+  clientId: string;
+  productIds: string[];
+}
 
 const OrderManagementPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -39,14 +80,14 @@ const OrderManagementPage = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Order | CreateOrder>({
+  } = useForm<Order>({
     defaultValues: {},
-    resolver: yupResolver(orderSchema),
+    resolver: yupResolver(OrderSchema),
   });
 
   useEffect(() => {
     axios
-      .get("https://localhost:7016/api/Order")
+      .get("http://localhost:88/Order")
       .then((response) => {
         setOrderList(response.data);
       })
@@ -55,7 +96,7 @@ const OrderManagementPage = () => {
       });
 
     axios
-      .get("https://localhost:7016/api/Supplier")
+      .get("http://localhost:88/Supplier")
       .then((response) => {
         setSupplierList(response.data);
       })
@@ -64,7 +105,7 @@ const OrderManagementPage = () => {
       });
 
     axios
-      .get("https://localhost:7016/api/Client")
+      .get("http://localhost:88/Client")
       .then((response) => {
         setClientList(response.data);
       })
@@ -73,7 +114,7 @@ const OrderManagementPage = () => {
       });
 
     axios
-      .get("https://localhost:7016/api/Product") // Fetch products data
+      .get("http://localhost:88/Product")
       .then((response) => {
         setProductList(response.data);
       })
@@ -82,20 +123,19 @@ const OrderManagementPage = () => {
       });
   }, [orderList]);
 
-  const handleCreateOrder: SubmitHandler<CreateOrder> = async (data, e) => {
+  const handleCreateOrder: SubmitHandler<Order> = async (data) => {
     const formattedData = {
       ...data,
-      supplierId: data.supplierId, // Assuming the IDs are already GUIDs
+      supplierId: data.supplierId,
       clientId: data.clientId,
       productIds: data.productIds,
     };
 
     try {
       await createOrder(formattedData);
-      setIsModalVisible(false); // Close the modal upon successful creation
+      setIsModalVisible(false);
       message.success("Commande ajoutée avec succès");
-      reset(); // Reset the form fields
-      e?.target.reset(); // Reset the form fields
+      reset();
     } catch (error) {
       message.error("Erreur lors de l'ajout de la commande");
       console.error("Failed to create order:", error);
@@ -105,14 +145,14 @@ const OrderManagementPage = () => {
   const handleUpdateOrder: SubmitHandler<Order> = async (data) => {
     const formattedData = {
       ...data,
-      supplierId: data.supplierId, // Assuming the IDs are already GUIDs
+      supplierId: data.supplierId,
       clientId: data.clientId,
       productIds: data.productIds,
     };
 
     try {
       await updateOrder(data.orderID, formattedData);
-      setIsModalVisible(false); // Close the modal upon successful update
+      setIsModalVisible(false);
       message.success("Commande mise à jour avec succès");
     } catch (error) {
       message.error("Erreur lors de la mise à jour de la commande");
@@ -143,13 +183,13 @@ const OrderManagementPage = () => {
 
   const showModal = () => {
     setIsEdit(false);
-    reset({}); // Reset form fields when creating a new order
+    reset({});
     setIsModalVisible(true);
   };
 
   const showEditModal = (order: Order) => {
     setIsEdit(true);
-    reset(order); // Set form fields with the order data for editing
+    reset(order);
     setIsModalVisible(true);
   };
 
@@ -172,35 +212,43 @@ const OrderManagementPage = () => {
 
   const getClientName = (clientID: string) => {
     const client = clientList.find((c) => c.clientID === clientID);
-    return client ? client.firstname + " " + client.lastName : "Unknown";
+    return client ? `${client.firstname} ${client.lastName}` : "Unknown";
   };
 
   const columns = [
     {
       accessorKey: "supplierId",
       header: "Fournisseur",
-      Cell: ({ cell }) => <span>{getSupplierName(cell.getValue())}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{getSupplierName(cell.getValue())}</span>
+      ),
     },
     {
       accessorKey: "totalAmount",
       header: "Montant Total",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "status",
       header: "Statut",
-      Cell: ({ cell }) => <span>{cell.getValue()}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{cell.getValue()}</span>
+      ),
     },
     {
       accessorKey: "clientId",
       header: "Client",
-      Cell: ({ cell }) => <span>{getClientName(cell.getValue())}</span>,
+      Cell: ({ cell }: { cell: TableCellProps }) => (
+        <span>{getClientName(cell.getValue())}</span>
+      ),
     },
     {
       accessorKey: "productIds",
       header: "Produits",
-      Cell: ({ cell }) => {
-        const productNames = cell.getValue().map((productId) => {
+      Cell: ({ cell }: { cell: TableCellProps }) => {
+        const productNames = cell.getValue().map((productId: string) => {
           const product = productList.find(
             (product) => product.productID === productId
           );
@@ -213,8 +261,8 @@ const OrderManagementPage = () => {
 
   return (
     <div className="h-screen overflow-y-auto bg-gray-200">
-      <div className=" flex items-center justify-between p-3">
-        <h1 className="text-1xl font-bold bg-white p-2 rounded shadow-md ">
+      <div className="flex items-center justify-between p-3">
+        <h1 className="text-1xl font-bold bg-white p-2 rounded shadow-md">
           Gestion des Commandes
         </h1>
         <button
@@ -243,7 +291,9 @@ const OrderManagementPage = () => {
       >
         <form
           onSubmit={handleSubmit((data, e) =>
-            isEdit ? handleUpdateOrder(data) : handleCreateOrder(data, e)
+            isEdit
+              ? handleUpdateOrder(data as Order)
+              : handleCreateOrder(data as Order, e)
           )}
           className="space-y-6"
           ref={formRef}
@@ -346,16 +396,22 @@ const OrderManagementPage = () => {
               <div className="flex flex-col space-y-2">
                 <Select
                   {...field}
+                  showSearch
                   mode="multiple"
                   placeholder="Sélectionner des produits"
-                  className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-500"
+                  className="w-full border p-2 rounded-md focus:border-blue-500"
                   onChange={(value) => field.onChange(value)}
                   value={field.value || []}
+                  optionFilterProp="label"
+                  // onSearch={(value) => {
+                  //   // console.log("search:", value);
+                  // }}
                 >
                   {productList.map((product) => (
                     <Select.Option
                       key={product.productID}
                       value={product.productID}
+                      label={product.name}
                     >
                       {product.name}
                     </Select.Option>
@@ -369,7 +425,6 @@ const OrderManagementPage = () => {
               </div>
             )}
           />
-          {/* Add other form fields as necessary */}
         </form>
       </Modal>
     </div>

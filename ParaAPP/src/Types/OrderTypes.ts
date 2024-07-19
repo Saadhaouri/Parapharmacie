@@ -3,11 +3,11 @@
 export interface Order {
   orderID: string;
   supplierId: string;
-  orderDate: Date;
+  orderDate: Date | null;
   totalAmount: number;
   status: string;
   clientId: string;
-  productIds: string[];
+  productIds: (string | undefined)[];
 }
 
 export interface CreateOrder {
@@ -15,5 +15,5 @@ export interface CreateOrder {
   totalAmount: number;
   status: string;
   clientId: string;
-  productIds: string[];
+  productIds: (string | undefined)[];
 }

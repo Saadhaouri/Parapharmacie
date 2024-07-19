@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Order, CreateOrder } from "../Types/OrderTypes";
 
-const API_URL = "https://localhost:7016/api/Order";
+const API_URL = "http://localhost:88/Order";
 
 export const getAllOrders = async (): Promise<Order[]> => {
   const response = await axios.get(API_URL);

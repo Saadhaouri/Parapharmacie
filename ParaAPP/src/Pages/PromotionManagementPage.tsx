@@ -1,38 +1,24 @@
-import { Modal, message, Select } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Modal, Select, message } from "antd";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
   createPromotion,
   deletePromotion,
-  updatePromotion,
   getAllPromotions,
+  updatePromotion,
 } from "../Services/promotionServices";
-import { CreatePromotion, Promotion } from "../Types/Promotion";
-
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import Product from "../Types/ProductType";
 
-// Validation schema for the promotion form
-const promotionSchema = yup.object().shape({
-  code: yup.string().required("Le code est requis"),
-  discount: yup
-    .number()
-    .required("Le pourcentage de réduction est requis")
-    .positive(),
-  startDate: yup.date().required("La date de début est requise"),
-  endDate: yup
-    .date()
-    .required("La date de fin est requise")
-    .min(
-      yup.ref("startDate"),
-      "La date de fin doit être après la date de début"
-    ),
-  productIds: yup.array().of(yup.string()).required("Les produits sont requis"),
-});
+interface Promotion {
+  promotionID: string;
+  code: string;
+  discount: number;
+  startDate: string;
+  endDate: string;
+  productIds: string[];
+}
 
 const formatDate = (date: string) => {
   const d = new Date(date);
@@ -41,6 +27,8 @@ const formatDate = (date: string) => {
   const year = d.getFullYear();
   return `${year}-${month}-${day}`;
 };
+
+const ITEMS_PER_PAGE = 6; // Change this to the number of items you want per page
 
 const PromotionManagementPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -51,53 +39,45 @@ const PromotionManagementPage = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
   const [productList, setProductList] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     control,
     handleSubmit,
+    register,
     formState: { errors },
     reset,
-  } = useForm<Promotion | CreatePromotion>({
+  } = useForm<Promotion>({
     defaultValues: {},
-    resolver: yupResolver(promotionSchema),
   });
 
   useEffect(() => {
-    // Fetch promotions and products on component mount
     const fetchPromotions = async () => {
       try {
-        const response = await axios.get(
-          "https://localhost:7016/api/Promotion"
-        );
+        const response = await axios.get("http://localhost:88/Promotion");
         setPromotionList(response.data);
       } catch (error) {
         console.error("Error fetching promotions:", error);
       }
     };
-
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://localhost:7016/api/Product");
+        const response = await axios.get("http://localhost:88/Product");
         setProductList(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
-
     fetchPromotions();
     fetchProducts();
   }, []);
 
-  const handleCreatePromotion: SubmitHandler<CreatePromotion> = async (
-    data,
-    e
-  ) => {
+  const handleCreatePromotion: SubmitHandler<Promotion> = async (data) => {
     try {
       await createPromotion(data);
       setIsModalVisible(false);
       message.success("Promotion ajoutée avec succès");
       reset();
-      e?.target.reset();
       const newPromotionList = await getAllPromotions();
       setPromotionList(newPromotionList); // Update the promotion list
     } catch (error) {
@@ -181,6 +161,20 @@ const PromotionManagementPage = () => {
 
   const handlePromotionClick = (promotion: Promotion) => {
     setSelectedPromotion(promotion);
+    setCurrentPage(1); // Reset to first page when a new promotion is selected
+  };
+
+  const totalItems = selectedPromotion?.productIds.length || 0;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+  const getCurrentPageProducts = () => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return selectedPromotion?.productIds.slice(startIndex, endIndex) || [];
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -233,156 +227,173 @@ const PromotionManagementPage = () => {
         ))}
       </div>
       {selectedPromotion && (
-        <div className="p-4 m-4 bg-white rounded-lg shadow-md h-72">
+        <div className="p-4 m-4 bg-white rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4 text-center ">
             {selectedPromotion.code}
           </h2>
 
-          <ul className="flex flex-wrap items-center gap-4">
-            {selectedPromotion.productIds.map((productId) => {
+          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 gap-4">
+            {getCurrentPageProducts().map((productId) => {
               const product = getProductDetails(productId);
               return (
                 product && (
                   <div
                     key={product.productID}
-                    className="w-full max-w-xs h-30 bg-gray-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between"
+                    className="bg-gradient-to-r from-violet-200 to-pink-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                   >
-                    <div className="px-4 py-2 overflow-hidden flex-1">
+                    <div className="p-4">
                       <h3 className="text-gray-800 font-bold text-lg truncate">
                         {product.name}
                       </h3>
                       <p className="text-gray-600 truncate">
                         {product.description}
                       </p>
-                    </div>
-                    <div className="px-4 py-2 flex justify-end items-center">
-                      <span>
+                      <div className="flex justify-end items-center mt-2">
                         <span className="text-gray-900 font-semibold">
                           Prix :
                         </span>
-                        <span className="text-gray-900">
-                          {product.price} dh
+                        <span className="text-gray-900 font-bold">
+                          {" "}
+                          {product.price} DH
                         </span>
-                      </span>
+                      </div>
                     </div>
                   </div>
                 )
               );
             })}
           </ul>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-4">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index}
+                  className={`px-3 py-1 mx-1 rounded ${
+                    currentPage === index + 1
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
+
       <Modal
-        title={isEdit ? "Modifier la promotion" : "Ajouter une promotion"}
-        open={isModalVisible}
+        title={isEdit ? "Modifier Promotion" : "Ajouter Promotion"}
+        visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okText={isEdit ? "Modifier" : "Ajouter"}
-        cancelText="Annuler"
       >
         <form
-          onSubmit={handleSubmit(
-            isEdit ? handleUpdatePromotion : handleCreatePromotion
-          )}
-          className="space-y-6"
           ref={formRef}
+          onSubmit={
+            isEdit
+              ? handleSubmit(handleUpdatePromotion)
+              : handleSubmit(handleCreatePromotion)
+          }
         >
-          <Controller
-            name="code"
-            control={control}
-            render={({ field }) => (
-              <div className="flex flex-col space-y-2">
-                <input
-                  {...field}
-                  placeholder="Code"
-                  className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
-                />
-                {errors.code && (
-                  <p className="text-red-500 text-sm">{errors.code.message}</p>
-                )}
-              </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-bold mb-2"
+              htmlFor="code"
+            >
+              Code Promotion
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="code"
+              type="text"
+              {...register("code", { required: true })}
+            />
+            {errors.code && (
+              <span className="text-red-500">Ce champ est requis</span>
             )}
-          />
-          <Controller
-            name="discount"
-            control={control}
-            render={({ field }) => (
-              <div className="flex flex-col space-y-2">
-                <input
-                  {...field}
-                  placeholder="Réduction (%)"
-                  type="number"
-                  className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
-                />
-                {errors.discount && (
-                  <p className="text-red-500 text-sm">
-                    {errors.discount.message}
-                  </p>
-                )}
-              </div>
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-bold mb-2"
+              htmlFor="discount"
+            >
+              Remise (%)
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="discount"
+              type="number"
+              {...register("discount", { required: true })}
+            />
+            {errors.discount && (
+              <span className="text-red-500">Ce champ est requis</span>
             )}
-          />
-          <Controller
-            name="startDate"
-            control={control}
-            render={({ field }) => (
-              <div className="flex flex-col space-y-2">
-                <input
-                  {...field}
-                  placeholder="Date de début"
-                  type="date"
-                  className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
-                />
-                {errors.startDate && (
-                  <p className="text-red-500 text-sm">
-                    {errors.startDate.message}
-                  </p>
-                )}
-              </div>
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-bold mb-2"
+              htmlFor="startDate"
+            >
+              Date de début
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="startDate"
+              type="date"
+              {...register("startDate", { required: true })}
+            />
+            {errors.startDate && (
+              <span className="text-red-500">Ce champ est requis</span>
             )}
-          />
-          <Controller
-            name="endDate"
-            control={control}
-            render={({ field }) => (
-              <div className="flex flex-col space-y-2">
-                <input
-                  {...field}
-                  placeholder="Date de fin"
-                  type="date"
-                  className="border border-gray-300 p-2 rounded-md focus:border-blue-500"
-                />
-                {errors.endDate && (
-                  <p className="text-red-500 text-sm">
-                    {errors.endDate.message}
-                  </p>
-                )}
-              </div>
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-bold mb-2"
+              htmlFor="endDate"
+            >
+              Date de fin
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="endDate"
+              type="date"
+              {...register("endDate", { required: true })}
+            />
+            {errors.endDate && (
+              <span className="text-red-500">Ce champ est requis</span>
             )}
-          />
-          <Controller
-            name="productIds"
-            control={control}
-            render={({ field }) => (
-              <div className="flex flex-col space-y-2">
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-bold mb-2"
+              htmlFor="productIds"
+            >
+              Produits
+            </label>
+            <Controller
+              control={control}
+              name="productIds"
+              rules={{ required: true }}
+              render={({ field }) => (
                 <Select
-                  {...field}
                   mode="multiple"
+                  style={{ width: "100%" }}
                   placeholder="Sélectionner des produits"
-                  className="w-full"
+                  {...field}
                   options={productList.map((product) => ({
                     label: product.name,
                     value: product.productID,
                   }))}
                 />
-                {errors.productIds && (
-                  <p className="text-red-500 text-sm">
-                    {errors.productIds.message}
-                  </p>
-                )}
-              </div>
+              )}
+            />
+            {errors.productIds && (
+              <span className="text-red-500">Ce champ est requis</span>
             )}
-          />
+          </div>
         </form>
       </Modal>
     </div>

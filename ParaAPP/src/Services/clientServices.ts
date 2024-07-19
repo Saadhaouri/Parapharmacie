@@ -3,7 +3,7 @@
 import axios from "axios";
 import { Client, CreateClient } from "../Types/ClientType";
 
-const API_URL = "https://localhost:7016/api/Client";
+const API_URL = "http://localhost:88/Client";
 
 export const createClient = (data: CreateClient) => {
   return axios.post(API_URL, data);

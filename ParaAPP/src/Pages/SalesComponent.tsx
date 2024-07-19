@@ -1,11 +1,15 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Delete } from "@mui/icons-material";
 import { Input, Modal, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { FaCalendarAlt, FaCalendarDay, FaCalendarWeek } from "react-icons/fa";
 import * as yup from "yup";
 import {
   addSale,
+  deleteAllSales,
   getAllProducts,
+  getAllSales,
   getDailySales,
   getMonthlySales,
   getTotalDailyProfit,
@@ -31,9 +35,11 @@ interface Sale {
 
 const SalesComponent: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [dailySales, setDailySales] = useState<Sale[]>([]);
   const [weeklySales, setWeeklySales] = useState<Sale[]>([]);
   const [monthlySales, setMonthlySales] = useState<Sale[]>([]);
+  const [allSales, setAllSales] = useState<Sale[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [dailyProfit, setDailyProfit] = useState(0);
   const [weeklyProfit, setWeeklyProfit] = useState(0);
@@ -62,9 +68,11 @@ const SalesComponent: React.FC = () => {
       const daily = await getDailySales();
       const weekly = await getWeeklySales();
       const monthly = await getMonthlySales();
+      const all = await getAllSales();
       setDailySales(daily);
       setWeeklySales(weekly);
       setMonthlySales(monthly);
+      setAllSales(all);
     } catch (error) {
       message.error("Failed to fetch sales data");
     }
@@ -108,6 +116,17 @@ const SalesComponent: React.FC = () => {
       fetchProfitData();
     } catch {
       message.error("Failed to add sale");
+    }
+  };
+
+  const handleDeleteAllSales = async () => {
+    try {
+      await deleteAllSales();
+      message.success("All sales deleted successfully");
+      setIsDeleteModalVisible(false);
+      fetchSalesData();
+    } catch {
+      message.error("Failed to delete sales");
     }
   };
 
@@ -188,29 +207,18 @@ const SalesComponent: React.FC = () => {
               name="productID"
               control={control}
               render={({ field }) => (
-                <div className="flex flex-col space-y-2">
-                  <Select
-                    {...field}
-                    placeholder="Select Product"
-                    className="w-full border"
-                    onChange={(value) => field.onChange(value)}
-                    value={field.value || ""}
-                  >
-                    {products.map((product) => (
-                      <Select.Option
-                        key={product.productID}
-                        value={product.productID}
-                      >
-                        {product.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                  {errors.productID && (
-                    <p className="text-red-500 text-sm">
-                      {errors.productID.message}
-                    </p>
-                  )}
-                </div>
+                <Select
+                  showSearch
+                  placeholder="Select a product"
+                  optionFilterProp="label"
+                  onChange={(value) => field.onChange(value)}
+                  options={products.map((product) => ({
+                    value: product.productID,
+                    label: product.name,
+                  }))}
+                  value={field.value || ""}
+                  className="w-full border"
+                />
               )}
             />
           </div>
@@ -248,111 +256,95 @@ const SalesComponent: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      <Modal
+        title="Confirm Deletion"
+        open={isDeleteModalVisible}
+        onOk={handleDeleteAllSales}
+        onCancel={() => setIsDeleteModalVisible(false)}
+        okText="supprimer "
+        okButtonProps={{ danger: true }}
+      >
+        <p>Êtes-vous sûr de vouloir supprimer toutes les ventes ?</p>
+      </Modal>
+
       <div className="p-2 flex justify-between items-center">
         <h1 className="text-1xl font-bold bg-white p-2 rounded shadow-md">
           Gestion des ventes
         </h1>
-        <button
-          className="px-6 py-2 flex items-center min-w-[120px] text-center text-white bg-emerald-400 border-emerald-600 shadow-xl hover:shadow rounded active:text-white-500 focus:ring"
-          onClick={() => setIsModalVisible(true)}
-        >
-          ajouter une vente
-        </button>
+        <div className="flex items-center justify-between">
+          <button
+            className="px-6 py-2 flex items-center min-w-[120px] text-center text-white bg-emerald-400 border-emerald-600 shadow-xl hover:shadow rounded active:text-white-500 focus:ring"
+            onClick={() => setIsModalVisible(true)}
+          >
+            Ajouter une vente
+          </button>
+          <button
+            className="px-6 py-2 flex items-center ml-2 text-center text-white bg-red-500 border-red-700 shadow-xl hover:shadow rounded active:text-white-500 focus:ring"
+            onClick={() => setIsDeleteModalVisible(true)}
+          >
+            <Delete />
+          </button>
+        </div>
       </div>
+
       <div className="grid p-4 grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <div className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 p-6 shadow-lg rounded-lg text-white">
-          <h3 className="text-lg font-bold mb-2">Top Product</h3>
+          <h3 className="text-lg font-bold mb-2">Top Produit </h3>
           <p className="text-center text-2xl font-bold text-red-600 mb-4">
             {mostSoldProduct.name}
           </p>
-          <div className="flex justify-between items-center">
-            <p className="text-lg font-semibold">Nr de ventes:</p>
-            <p className="text-xl font-bold">{mostSoldProduct.count}</p>
-          </div>
         </div>
 
-        <div className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-6 shadow-lg rounded-lg flex justify-between items-center text-white">
+        <div className="bg-gradient-to-r from-sky-400 to-blue-500 p-6 shadow-lg rounded-lg flex justify-between items-center text-white">
           <div>
             <h3 className="text-lg font-bold">Ventes quotidiennes</h3>
             <div className="mt-2">
               <h1 className="text-4xl font-extrabold">{dailySales.length}</h1>
-              <h2 className="text-2xl font-semibold mt-1">
-                Bénéfices: {dailyProfit}
+              <h2 className="text-1xl font-semibold mt-1">
+                Bénéfices: {dailyProfit} DH
               </h2>
             </div>
           </div>
           <div className="flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M13 2L9 8h6l-4 6h4L11 22"></path>
-            </svg>
+            <FaCalendarDay className="h-12 w-12" />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-green-400 via-blue-500 to-teal-500 p-6 shadow-lg rounded-lg flex justify-between items-center text-white">
+        <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-6 shadow-lg rounded-lg flex justify-between items-center text-white">
           <div>
             <h3 className="text-lg font-bold">Ventes hebdomadaires</h3>
             <div className="mt-2">
               <h1 className="text-4xl font-extrabold">{weeklySales.length}</h1>
-              <h2 className="text-2xl font-semibold mt-1">
-                Bénéfices: {weeklyProfit}
+              <h2 className="text-1xl font-semibold mt-1">
+                Bénéfices: {weeklyProfit} DH
               </h2>
             </div>
           </div>
           <div className="flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M13 2L9 8h6l-4 6h4L11 22"></path>
-            </svg>
+            <FaCalendarWeek className="h-12 w-12" />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-cyan-400 via-teal-500 to-blue-500 p-6 shadow-lg rounded-lg flex justify-between items-center text-white">
+        <div className="bg-gradient-to-r from-blue-400 to-emerald-400 p-6 shadow-lg rounded-lg flex justify-between items-center text-white">
           <div>
             <h3 className="text-lg font-bold">Ventes mensuelles</h3>
             <div className="mt-2">
               <h1 className="text-4xl font-extrabold">{monthlySales.length}</h1>
-              <h2 className="text-2xl font-semibold mt-1">
-                Bénéfices: {monthlyProfit}
+              <h2 className="text-1xl font-semibold mt-1">
+                Bénéfices: {monthlyProfit} DH
               </h2>
             </div>
           </div>
           <div className="flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M13 2L9 8h6l-4 6h4L11 22"></path>
-            </svg>
+            <FaCalendarAlt className="h-12 w-12" />
           </div>
         </div>
       </div>
 
       <div className="flex justify-evenly items-start p-4 gap-4">
         <div style={{ maxHeight: "400px", overflowY: "auto" }}>
-          <h2 className="text-lg font-bold mb-2">Daily Sales</h2>
+          <h2 className="text-lg font-bold mb-2">Ventes quotidiennes</h2>
           <Table
             columns={columns}
             dataSource={dailySales}
@@ -363,7 +355,7 @@ const SalesComponent: React.FC = () => {
         </div>
 
         <div style={{ maxHeight: "400px", overflowY: "auto" }}>
-          <h2 className="text-lg font-bold mb-2">Weekly Sales</h2>
+          <h2 className="text-lg font-bold mb-2">Ventes hebdomadaires</h2>
           <Table
             columns={columns}
             dataSource={weeklySales}
@@ -373,11 +365,23 @@ const SalesComponent: React.FC = () => {
           />
         </div>
       </div>
-      <div className=" p-4" style={{ maxHeight: "400px", overflowY: "auto" }}>
-        <h2 className="text-lg font-bold mb-2">Monthly Sales</h2>
+
+      <div className="p-4" style={{ maxHeight: "400px", overflowY: "auto" }}>
+        <h2 className="text-lg font-bold mb-2">Ventes mensuelles</h2>
         <Table
           columns={columns}
           dataSource={monthlySales}
+          rowKey="id"
+          pagination={false}
+          scroll={{ y: 300 }}
+        />
+      </div>
+
+      <div className="p-4" style={{ maxHeight: "400px", overflowY: "auto" }}>
+        <h2 className="text-lg font-bold mb-2">Toutes les ventes</h2>
+        <Table
+          columns={columns}
+          dataSource={allSales}
           rowKey="id"
           pagination={false}
           scroll={{ y: 300 }}

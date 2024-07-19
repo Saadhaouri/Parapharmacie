@@ -3,8 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Promotion } from "../../Types/Promotion";
 
-// API functions
-const API_URL = "https://localhost:7016/api/Promotion";
+const API_URL = "http://localhost:88/Promotion";
 
 const getAllPromotions = async (): Promise<Promotion[]> => {
   const response = await axios.get(API_URL);

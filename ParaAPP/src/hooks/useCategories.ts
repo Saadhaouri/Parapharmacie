@@ -14,9 +14,10 @@ interface Category {
 }
 
 interface Product {
-  id: string;
+  productID: string;
   name: string;
   description: string;
+  price: number;
 }
 
 export const useGetAllCategories = () => {
@@ -71,7 +72,7 @@ export const useCreateCategory = () => {
   const [error, setError] = useState<Error | null>(null);
   const { refetchCategories } = useGetAllCategories();
 
-  const create = async (category: Omit<Category, "id">) => {
+  const create = async (category: Category) => {
     setLoading(true);
     try {
       await createCategory(category);
@@ -91,7 +92,7 @@ export const useUpdateCategory = () => {
   const [error, setError] = useState<Error | null>(null);
   const { refetchCategories } = useGetAllCategories();
 
-  const update = async (id: string, category: Omit<Category, "id">) => {
+  const update = async (id: string, category: Category) => {
     setLoading(true);
     try {
       await updateCategory(id, category);

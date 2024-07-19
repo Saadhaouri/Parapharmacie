@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const apiSupplierUrl = "https://localhost:7016/api/Supplier";
+const apiSupplierUrl = "http://localhost:88/Supplier";
 interface Supplier {
   id: string;
   name: string;

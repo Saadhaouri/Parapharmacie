@@ -23,6 +23,8 @@ const DataTable: React.FC<DataTableProps> = ({
 
   useEffect(() => {
     // Do something when the row selection changes
+
+    setRowSelection;
   }, [rowSelection]);
 
   const handleDelete = (row: any) => {
@@ -44,8 +46,8 @@ const DataTable: React.FC<DataTableProps> = ({
     defaultDisplayColumn: { enableResizing: true },
     enableRowSelection: true,
     enablePagination: true, // Enable pagination
-    onPageChange: (page) => console.log(page), // Optional: Handle page change event
-    pageSize: 5, // Set the initial page size
+    // onPageChange: (page) => console.log(page), // Optional: Handle page change event
+
     muiTableContainerProps: { sx: { maxHeight: "500px", background: "green" } },
     rowVirtualizerOptions: { overscan: 5 },
     columnVirtualizerOptions: { overscan: 2 },

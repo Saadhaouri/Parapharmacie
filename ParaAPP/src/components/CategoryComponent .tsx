@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal, message } from "antd";
-import axios from "axios";
-import { useForm } from "react-hook-form";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Modal, Pagination, message } from "antd";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useGetProductsByCategoryId } from "../hooks/useCategories";
 
 interface Category {
@@ -15,15 +15,19 @@ const CategoryComponent: React.FC = () => {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
-  const [listcategories, setListcategories] = useState<Category[]>([]);
+  const [listCategories, setListCategories] = useState<Category[]>([]);
+  const [categoriesPage, setCategoriesPage] = useState(1);
+  const [productsPage, setProductsPage] = useState(1);
+  const [categoriesPageSize, setCategoriesPageSize] = useState(5);
+  const [productsPageSize, setProductsPageSize] = useState(8);
 
   const { register, handleSubmit, reset, setValue } = useForm<Category>();
 
   useEffect(() => {
     axios
-      .get("https://localhost:7016/api/Category")
+      .get("http://localhost:88/Category")
       .then((response) => {
-        setListcategories(response.data);
+        setListCategories(response.data);
       })
       .catch((error) => {
         console.error(
@@ -31,7 +35,7 @@ const CategoryComponent: React.FC = () => {
           error
         );
       });
-  }, [listcategories]);
+  }, []);
 
   const { products, loading: productsLoading } =
     useGetProductsByCategoryId(selectedCategoryId);
@@ -55,6 +59,7 @@ const CategoryComponent: React.FC = () => {
 
   const handleSelectCategory = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
+    setProductsPage(1);
   };
 
   const handleDeleteCategory = (categoryId: string) => {
@@ -62,10 +67,10 @@ const CategoryComponent: React.FC = () => {
       title: "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
       onOk: () => {
         axios
-          .delete(`https://localhost:7016/api/Category/${categoryId}`)
+          .delete(`http://localhost:88/Category/${categoryId}`)
           .then(() => {
-            setListcategories(
-              listcategories.filter((c) => c.id !== categoryId)
+            setListCategories(
+              listCategories.filter((c) => c.id !== categoryId)
             );
             message.success("Catégorie supprimée avec succès !");
           })
@@ -84,18 +89,18 @@ const CategoryComponent: React.FC = () => {
 
   const onCreateSubmit = (data: Category) => {
     axios
-      .post("https://localhost:7016/api/Category", data)
+      .post("http://localhost:88/Category", data)
       .then((response) => {
-        setListcategories([...listcategories, response.data]);
-        message.success("Catégorie ajoutée avec succès !");
+        setListCategories([...listCategories, response.data]);
+        message.success("Catégorie créée avec succès !");
         handleCancel();
       })
       .catch((error) => {
         message.error(
-          "Une erreur s'est produite lors de l'ajout de la catégorie !"
+          "Une erreur s'est produite lors de la création de la catégorie !"
         );
         console.error(
-          "Une erreur s'est produite lors de l'ajout de la catégorie !",
+          "Une erreur s'est produite lors de la création de la catégorie !",
           error
         );
       });
@@ -103,18 +108,16 @@ const CategoryComponent: React.FC = () => {
 
   const onUpdateSubmit = (data: Category) => {
     if (currentCategory) {
-      console.log(data);
-
       axios
-        .put(`https://localhost:7016/api/Category/${currentCategory.id}`, data)
+        .put(`http://localhost:88/Category/${currentCategory.id}`, data)
         .then((response) => {
-          setListcategories(
-            listcategories.map((c) =>
+          setListCategories(
+            listCategories.map((c) =>
               c.id === currentCategory.id ? response.data : c
             )
           );
           message.success("Catégorie mise à jour avec succès !");
-          handleCancel(); // Fermer le modal
+          handleCancel();
         })
         .catch((error) => {
           message.error(
@@ -128,6 +131,26 @@ const CategoryComponent: React.FC = () => {
     }
   };
 
+  const handleCategoriesPageChange = (page: number, pageSize: number) => {
+    setCategoriesPage(page);
+    setCategoriesPageSize(pageSize);
+  };
+
+  const handleProductsPageChange = (page: number, pageSize: number) => {
+    setProductsPage(page);
+    setProductsPageSize(pageSize);
+  };
+
+  const paginatedCategories = listCategories.slice(
+    (categoriesPage - 1) * categoriesPageSize,
+    categoriesPage * categoriesPageSize
+  );
+
+  const paginatedProducts = products.slice(
+    (productsPage - 1) * productsPageSize,
+    productsPage * productsPageSize
+  );
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center">
@@ -136,11 +159,11 @@ const CategoryComponent: React.FC = () => {
           Nouvelle Catégorie
         </Button>
       </div>
-      <div className="grid grid-cols-3 gap-1">
-        {listcategories.map((category) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {paginatedCategories.map((category) => (
           <div
             key={category.id}
-            className="p-4 m-2 bg-white rounded shadow-xl hover:shadow-lg cursor-pointer flex justify-between items-center"
+            className="p-4 bg-white rounded shadow-xl hover:shadow-lg cursor-pointer flex justify-between items-center"
             onClick={() => handleSelectCategory(category.id)}
           >
             <h3 className="font-semibold">{category.name}</h3>
@@ -163,14 +186,21 @@ const CategoryComponent: React.FC = () => {
           </div>
         ))}
       </div>
+      <Pagination
+        current={categoriesPage}
+        pageSize={categoriesPageSize}
+        total={listCategories.length}
+        onChange={handleCategoriesPageChange}
+        className="mt-4"
+      />
       {selectedCategoryId && (
         <div>
           <h2 className="text-xl font-bold mb-4">
             Produits dans la catégorie sélectionnée
           </h2>
           {productsLoading && <p>Chargement en cours...</p>}
-          <div className="grid grid-cols-4 gap-2">
-            {products.map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {paginatedProducts.map((product) => (
               <div
                 key={product.id}
                 className="w-full max-w-xs bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between"
@@ -194,18 +224,25 @@ const CategoryComponent: React.FC = () => {
               </div>
             ))}
           </div>
+          <Pagination
+            current={productsPage}
+            pageSize={productsPageSize}
+            total={products.length}
+            onChange={handleProductsPageChange}
+            className="mt-4"
+          />
         </div>
       )}
       <Modal
         title="Nouvelle Catégorie"
-        open={isCreateModalVisible}
+        visible={isCreateModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
         <form onSubmit={handleSubmit(onCreateSubmit)}>
           <div className="mb-4">
             <label
-              htmlFor="categoryName"
+              htmlFor="createCategoryName"
               className="block text-sm font-medium text-gray-700"
             >
               Nom de la Catégorie
@@ -213,28 +250,28 @@ const CategoryComponent: React.FC = () => {
             <input
               type="text"
               {...register("name", { required: true })}
-              id="categoryName"
+              id="createCategoryName"
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
             />
           </div>
           <div className="flex justify-end">
             <Button type="primary" htmlType="submit">
-              Soumettre
+              Créer
             </Button>
           </div>
         </form>
       </Modal>
       <Modal
-        title="Mettre à Jour la Catégorie"
-        open={isUpdateModalVisible}
+        title="Mettre à jour une Catégorie"
+        visible={isUpdateModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
         <form onSubmit={handleSubmit(onUpdateSubmit)}>
           <div className="mb-4">
             <label
-              htmlFor="categoryName"
+              htmlFor="updateCategoryName"
               className="block text-sm font-medium text-gray-700"
             >
               Nom de la Catégorie
@@ -242,14 +279,14 @@ const CategoryComponent: React.FC = () => {
             <input
               type="text"
               {...register("name", { required: true })}
-              id="categoryName"
+              id="updateCategoryName"
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
             />
           </div>
           <div className="flex justify-end">
             <Button type="primary" htmlType="submit">
-              Soumettre
+              Mettre à jour
             </Button>
           </div>
         </form>
